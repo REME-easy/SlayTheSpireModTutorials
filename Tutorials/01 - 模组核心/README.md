@@ -31,16 +31,14 @@ public class ExampleMod {
 
 ## 2.向basemod订阅事件
 
-basemod提供了许多钩子，也就是在特定时间点调用所有订阅了该钩子的类的特定方法的东西。例如可以通过订阅`EditCharactersSubscriber`来向basemod注册你的mod人物。<br>
+basemod提供了许多钩子，也就是在特定时间点调用所有订阅了该钩子的类的特定方法的东西。例如可以通过订阅`EditCardsSubscriber`来向basemod注册你的mod卡牌。<br>
 
 要想订阅这些事件，首先你要实现相应接口，然后写相应的触发函数，最后告诉basemod你要订阅事件。
-
-1.实现接口
 
 ExampleMod.java:
 ```java
 @SpireInitializer
-public class ExampleMod implements EditCharactersSubscriber { // 实现接口
+public class ExampleMod implements EditCardsSubscriber { // 实现接口
     public ExampleMod() {
         BaseMod.subscribe(this); // 告诉basemod你要订阅事件
     }
@@ -49,15 +47,15 @@ public class ExampleMod implements EditCharactersSubscriber { // 实现接口
         new ExampleMod();
     }
 
-    // 当basemod开始注册mod人物时，便会调用这个函数
+    // 当basemod开始注册mod卡牌时，便会调用这个函数
     @Override
-    public void receiveEditCharacters() {
-        // TODO 这里写添加你人物的代码
+    public void receiveEditCards() {
+        // TODO 这里写添加你卡牌的代码
     }
 }
 ```
 
-关于如何添加人物之后的章节会提及。
+关于如何添加之后的章节会提及。
 
 
 <b>TIPS：可以在文件夹找到本章的代码。</b>

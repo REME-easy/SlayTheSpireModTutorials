@@ -3,10 +3,10 @@ package ExampleMod.ModCore;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 
 import basemod.BaseMod;
-import basemod.interfaces.EditCharactersSubscriber;
+import basemod.interfaces.EditCardsSubscriber;
 
 @SpireInitializer
-public class ExampleMod implements EditCharactersSubscriber {
+public class ExampleMod implements EditCardsSubscriber {
     public ExampleMod() {
         BaseMod.subscribe(this);
     }
@@ -16,6 +16,6 @@ public class ExampleMod implements EditCharactersSubscriber {
     }
 
     @Override
-    public void receiveEditCharacters() {
+    public void receiveEditCards() {
     }
 }
