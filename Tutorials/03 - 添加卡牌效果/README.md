@@ -3,6 +3,8 @@
 ## 1.卡牌效果
 本章介绍如何让你的卡牌有造成伤害的效果。我们先来介绍`use`这个方法。
 
+*本章内容有点多，可以先抄写之后再理解。*
+
 ### use(AbstractPlayer p, AbstractMonster m)
 
 ```java
