@@ -16,15 +16,17 @@
 ### Intellij IDEA（以下简称idea）
 
 1. 安装<br>
+
 点击下方链接下载idea，注意下载免费社区版（Community）开发mod足够了。
 https://www.jetbrains.com/idea/download/#section=windows
 
 2. 创建新项目<br>
-安装完成后打开idea，点击Create New Project创建新项目。如果你下载了其他人的样板代码，可以通过Import Project导入。
+
+安装完成后打开idea，点击Create New Project创建新项目。如果你下载了其他人的样板代码，可以通过Import Project导入。<br>
 ![002](https://i.loli.net/2021/11/09/HRA8rxc5Wgi3kKs.png)
 
 
-如图，创建一个maven项目。注意jdk版本。
+如图，创建一个maven项目。注意jdk版本。<br>
 ![003](https://i.loli.net/2021/11/10/xGDHjOqhYTV1wa4.png)
 
 3. 创建配置文件<br>
