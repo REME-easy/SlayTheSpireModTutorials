@@ -13,7 +13,7 @@
 这里显示的是<b>空指针错误</b>（NullPointerException），说明程序将调用对象时却遇到了null。（不懂的可以去看java异常处理）<br>
 
 具体报错的是`ExampleMod`类的
-`receiveEditCards`，并且是`ExampleMod`的第<b>20</b>行。
+`receiveEditCards`方法，并且是`ExampleMod`的第<b>20</b>行。
 
 如果难以看出是哪个mod出的错，可以向上翻几行，上面有详细的异常处理信息。
 
@@ -23,7 +23,7 @@
 最后展示一下杀戮尖塔mod常见的几种异常。
 | 名称 | 可能原因 | 如何纠错 |
 | --- | --- | --- |
-| NullPointerException | 一个变量为空，但你却调用了它的方法。 | 进行`val != null`的判断。 |
+| NullPointerException | 一个变量为空，但你却调用了它的方法；还有可能是缺少图片、文本，具体看上下文 | 进行`val != null`的判断；查看自己是否缺少资源 |
 | ArrayIndexOutOfBoundsException | 你索引的数组序号在其范围之外。 | 查看数组序号是否超范围。 |
 | ConcurrentModificationException | 你在循环中增加或删除了元素。（常见的在effects中直接添加、怪物直接在怪物列表添加怪物） | 换一个方向遍历，使用正规的添加删除手段 |
 
