@@ -13,7 +13,7 @@
             * ExampleResources
                 * <b>localization</b>
                 * images
-            ModTheSpire.json
+            * ModTheSpire.json
 
 2. 你可以创建不同文件夹放置不同语言的资源。
 
