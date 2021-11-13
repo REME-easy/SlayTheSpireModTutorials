@@ -29,6 +29,7 @@ public class ExampleMod implements EditCardsSubscriber {
 接下来是向basemod注册自己的颜色。这里需要填的东西很多，它们代表的意思本教程一一列举在旁边。你也可以查看对应路径的图片。
 
 ```java
+// 这段代码不能编译
 public class ExampleMod implements EditStringsSubscriber,EditCardsSubscriber {
     // 人物选择界面按钮的图片
     private static final String MY_CHARACTER_BUTTON = "ExampleModResources/img/char/Character_Button.png";
@@ -58,10 +59,10 @@ public class ExampleMod implements EditStringsSubscriber,EditCardsSubscriber {
     public ExampleModModCore() {
             BaseMod.subscribe(this);
             // 这里注册颜色
-            BaseMod.addColor(ExampleMod_CARD, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR,BG_ATTACK_512,BG_SKILL_512,BG_POWER_512,energy_orb,BG_ATTACK_1024,BG_SKILL_1024,BG_POWER_1024,big_orb,small_orb);
+            BaseMod.addColor(EXAMPLE_CARD, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR,BG_ATTACK_512,BG_SKILL_512,BG_POWER_512,energy_orb,BG_ATTACK_1024,BG_SKILL_1024,BG_POWER_1024,big_orb,small_orb);
     }
 ```
-
+*这里缺少一个卡牌颜色的枚举。将在下一章介绍。*<br>
 查看接下来一章了解如何添加新人物。
 
 <br><br><br>

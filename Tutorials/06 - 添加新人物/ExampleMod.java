@@ -1,5 +1,5 @@
 @SpireInitializer
-public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber {
+public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber, EditCharactersSubscriber{
     private static final String MY_CHARACTER_BUTTON = "ExampleModResources/img/char/Character_Button.png";
     private static final String MY_CHARACTER_PORTRAIT = "ExampleModResources/img/char/Character_Portrait.png";
     private static final String BG_ATTACK_512 = "ExampleModResources/img/512/bg_attack_512.png";
@@ -32,6 +32,12 @@ public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber {
         BaseMod.addCard(new Strike());
     }
 
+    @Override
+    public void receiveEditCharacters() {
+        // 向basemod注册人物
+        BaseMod.addCharacter(new MyCharacter(CardCrawlGame.playerName), MY_CHARACTER_BUTTON, MY_CHARACTER_PORTRAIT, MY_CHARACTER);
+    }
+
     public void receiveEditStrings() {
         String lang;
         if (Settings.language == GameLanguage.ZHS) {
@@ -40,5 +46,6 @@ public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber {
             lang = "ENG";
         }
         BaseMod.loadCustomStringsFile(CardStrings.class, "ExampleResources/localization/" + lang + "/cards.json");
+        BaseMod.loadCustomStringsFile(CharacterStrings.class, "ExampleResources/localization/" + lang + "/characters.json");
     }
 }
