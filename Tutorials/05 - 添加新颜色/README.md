@@ -11,6 +11,9 @@
 
 ```java
 // ...省略
+// **注意是引用这个**
+import com.badlogic.gdx.graphics.Color;
+
 public class ExampleMod implements EditCardsSubscriber {
     // 除以255得出需要的参数。你也可以直接写出计算值。
     private static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);

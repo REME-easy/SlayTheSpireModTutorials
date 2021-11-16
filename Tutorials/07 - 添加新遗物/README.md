@@ -91,9 +91,23 @@ ExampleMod.java:
 public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber, EditCharactersSubscriber,
 EditRelicsSubscriber{ // 新增
 // ...其余省略
-@Override
-public void receiveEditRelics() {
-    BaseMod.addRelic(new MyRelic(), RelicType.SHARED); // RelicType表示是所有角色都能拿到的遗物，还是一个角色的独有遗物
+
+    public void receiveEditStrings() {
+        String lang;
+        if (Settings.language == GameLanguage.ZHS) {
+            lang = "ZHS";
+        } else {
+            lang = "ENG";
+        }
+        BaseMod.loadCustomStringsFile(CardStrings.class, "ExampleResources/localization/" + lang + "/cards.json");
+        BaseMod.loadCustomStringsFile(CharacterStrings.class, "ExampleResources/localization/" + lang + "/characters.json");
+        // 添加注册json
+        BaseMod.loadCustomStringsFile(RelicStrings.class, "ExampleResources/localization/" + lang + "/relics.json");
+    }
+
+    @Override
+    public void receiveEditRelics() {
+        BaseMod.addRelic(new MyRelic(), RelicType.SHARED); // RelicType表示是所有角色都能拿到的遗物，还是一个角色的独有遗物
 }
 ```
 

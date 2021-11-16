@@ -17,7 +17,7 @@
 
 如果难以看出是哪个mod出的错，可以向上翻几行，上面有详细的异常处理信息。
 
-![002](https://i.loli.net/2021/11/11/TyUsveD8NgilwL6.png)
+![002](https://i.loli.net/2021/11/11/TyUsveD8NgilwL6.png)<br>
 *ExampleMod出错了*
 
 最后展示一下杀戮尖塔mod常见的几种异常。
