@@ -1,21 +1,28 @@
-# 添加新人物
+// 省略部分import
 
-添加颜色之后，就可以添加新人物了。我们先来创建一个人物类。首先新建一个文件夹管理你的人物类。
+import basemod.abstracts.CustomPlayer;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
+import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.EnergyManager;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.cutscenes.CutscenePanel;
+import com.megacrit.cardcrawl.events.city.Vampires;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.ScreenShake;
+import com.megacrit.cardcrawl.localization.CharacterStrings;
+import com.megacrit.cardcrawl.relics.Vajra;
+import com.megacrit.cardcrawl.screens.CharSelectInfo;
+import java.util.ArrayList;
 
-* ModExample
-    * Cards
-    * <b>Characters</b> <-这里添加
-        * <b>MyCharacter.java</b>
-    * ModCore
+import static ModExample.Characters.MyCharacter.Enums.EXAMPLE_CARD;
+import static ModExample.Characters.MyCharacter.Enums.MY_CHARACTER;
 
-接下来也是繁杂的理解并填写的过程，你可以直接复制并慢慢修改，但要注意哪些能修改哪些不能修改的提醒。同样的本教程将准备事例资源。
-
-> 技巧：当你需要修改同一指代的单词时（如一个类名），idea可以<kbd>shift</kbd>+<kbd>f6</kbd>修改，vscode按下<kbd>f2</kbd>。
-
-
-MyCharacter.java:
-```java
-// 继承CustomPlayer类
 public class MyCharacter extends CustomPlayer {
     // 火堆的人物立绘（行动前）
     private static final String MY_CHARACTER_SHOULDER_1 = ModHelper.MakeAssetPath("img/char/shoulder1.png");
@@ -78,7 +85,9 @@ public class MyCharacter extends CustomPlayer {
         for(int x = 0; x<5; x++) {
             retVal.add(Strike.ID);
         }
-        retVal.add("ExampleMod:Strike");
+        for(int x = 0; x<5; x++) {
+            retVal.add(Defend.ID);
+        }
         return retVal;
     }
 
@@ -151,7 +160,7 @@ public class MyCharacter extends CustomPlayer {
     @Override
     public ArrayList<CutscenePanel> getCutscenePanels() {
         ArrayList<CutscenePanel> panels = new ArrayList<>();
-        // 两个参数的，第二个参数表示出现图片时播放的音效
+        // 有两个参数的，第二个参数表示出现图片时播放的音效
         panels.add(new CutscenePanel(ModHelper.MakeAssetPath("img/char/Victory1.png"), "ATTACK_MAGIC_FAST_1"));
         panels.add(new CutscenePanel(ModHelper.MakeAssetPath("img/char/Victory2.png")));
         panels.add(new CutscenePanel(ModHelper.MakeAssetPath("img/char/Victory3.png")));
@@ -219,61 +228,3 @@ public class MyCharacter extends CustomPlayer {
         public static CardLibrary.LibraryType EXAMPLE_LIBRARY;
     }
 }
-```
-
-和给卡牌添加本地化文本一样，我们需要给人物添加本地化内容。首先新建`characters.json`文件。
-
-* ExampleModResources
-    * localization
-        * cards.json
-        * <b>characters.json</b> <-localization文件夹下新建
-
-characters.json:
-```json
-{
-  "ExampleMod:MyCharacter": { // ID要和人物类中getCharStrings的参数一致
-    "NAMES": [
-      "自定义人物"
-    ],
-    "TEXT": [
-      "这是一段人物描述", // 上面提到的人物描述
-      "“你就是心脏？”" // 上面提到的面对心脏的文本
-    ]
-  }
-}
-```
-
-还要向basemod注册。
-
-ExampleMod.java:
-```java
-@SpireInitializer
-public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber,
-EditCharactersSubscriber { // 添加EditCharactersSubscriber
-    //...省略
-
-    // 当开始添加人物时，调用这个方法
-    @Override
-    public void receiveEditCharacters() {
-        // 向basemod注册人物
-        BaseMod.addCharacter(new MyCharacter(CardCrawlGame.playerName), MY_CHARACTER_BUTTON, MY_CHARACTER_PORTRAIT, MY_CHARACTER);
-    }
-
-    public void receiveEditStrings() {
-        String lang;
-        if (Settings.language == GameLanguage.ZHS) {
-            lang = "ZHS";
-        } else {
-            lang = "ENG";
-        }
-        BaseMod.loadCustomStringsFile(CardStrings.class, "ExampleResources/localization/" + lang + "/cards.json");
-        // 这里添加注册本地化文本
-        BaseMod.loadCustomStringsFile(CharacterStrings.class, "ExampleResources/localization/" + lang + "/characters.json");
-    }
-
-}
-```
-
-*并未实际运行，如果出错请在issues或评论留言*
-
-好了！如果你能选择自己的人物，那么算是正式入了mod制作的大门了。在下一章<b>添加新遗物</b>之后，我们将通过几个例子拓宽制作mod的思路。
