@@ -50,7 +50,7 @@ public class ExampleMod implements EditStringsSubscriber,EditCardsSubscriber {
     private static final String BG_ATTACK_1024 = "ExampleModResources/img/1024/bg_attack.png";
     // 能力牌的背景（大尺寸）
     private static final String BG_POWER_1024 = "ExampleModResources/img/1024/bg_power.png";
-    // 技能牌的背景（小尺寸）
+    // 技能牌的背景（大尺寸）
     private static final String BG_SKILL_1024 = "ExampleModResources/img/1024/bg_skill.png";
     // 在卡牌预览界面的能量图标
     private static final String big_orb = "ExampleModResources/img/char/card_orb.png";
@@ -59,7 +59,7 @@ public class ExampleMod implements EditStringsSubscriber,EditCardsSubscriber {
     private static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);
 
 
-    public ExampleModModCore() {
+    public ExampleMod() {
             BaseMod.subscribe(this);
             // 这里注册颜色
             BaseMod.addColor(EXAMPLE_CARD, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR,BG_ATTACK_512,BG_SKILL_512,BG_POWER_512,energy_orb,BG_ATTACK_1024,BG_SKILL_1024,BG_POWER_1024,big_orb,small_orb);
@@ -67,27 +67,3 @@ public class ExampleMod implements EditStringsSubscriber,EditCardsSubscriber {
 ```
 *这里缺少一个卡牌颜色的枚举。将在下一章介绍。*<br>
 查看接下来一章了解如何添加新人物。
-
-<br><br><br>
-
-## 进阶：简化代码
-在获取资源的时候，总是要写`"ExampleModResources/"`这样一层自己套的路径，很麻烦。可以在自己的小帮手中封装一个新的方法。（小帮手类详见前一章进阶）
-
-```java
-public class ModHelper {
-    public static String MakePath(String id) {
-        return "ExampleMod:" + id;
-    }
-
-    // 制作资源路径
-    public static String MakeAssetPath(String id) {
-        return "ExampleModResources/" + id;
-    }
-}
-```
-
-于是一些路径的写法就可以简化了。
-
-```java
-    String path = ModHelper.MakeAssetPath("img/....");
-```
