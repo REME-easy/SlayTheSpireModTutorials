@@ -32,18 +32,16 @@
 https://github.com/daviscook477/BaseMod/wiki/Dynamic-Variables
 
 ```json
-    "给予 !M! 层 虚弱  !ExampleMod:M2! 次。" // 若你注册了DynamicVariable且key()返回“ExampleMod:M2”
+    "给予 !M! 层 虚弱 !ExampleMod:M2! 次。" // 若你注册了DynamicVariable且key()返回“ExampleMod:M2”
 ```
 *注意自定义变量不能在行尾，不然会出bug*
 
 ### 自定义关键词
 
-自定义关键词可以在向basemod注册后使用。
+自定义关键词可以在向basemod注册后使用。详情看09 - 添加新关键词。
 ```java
     BaseMod.addKeyword("examplemod", keyword.NAMES[0], keyword.NAMES, keyword.DESCRIPTION);
 ```
-
-// TODO 添加关键词教程
 
 ```json
     "给予 !M! 层 examplemod:恐惧 。" // 如果你注册了关键词恐惧

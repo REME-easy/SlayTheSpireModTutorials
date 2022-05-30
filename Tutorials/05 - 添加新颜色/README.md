@@ -45,7 +45,7 @@ public class ExampleMod implements EditStringsSubscriber,EditCardsSubscriber {
     // 技能牌的背景（小尺寸）
     private static final String BG_SKILL_512 = "ExampleModResources/img/512/bg_skill_512.png";
     // 在卡牌和遗物描述中的能量图标
-    private static final String small_orb = "ExampleModResources/img/char/small_orb.png";
+    private static final String SMALL_ORB = "ExampleModResources/img/char/small_orb.png";
     // 攻击牌的背景（大尺寸）
     private static final String BG_ATTACK_1024 = "ExampleModResources/img/1024/bg_attack.png";
     // 能力牌的背景（大尺寸）
@@ -53,17 +53,17 @@ public class ExampleMod implements EditStringsSubscriber,EditCardsSubscriber {
     // 技能牌的背景（大尺寸）
     private static final String BG_SKILL_1024 = "ExampleModResources/img/1024/bg_skill.png";
     // 在卡牌预览界面的能量图标
-    private static final String big_orb = "ExampleModResources/img/char/card_orb.png";
+    private static final String BIG_ORB = "ExampleModResources/img/char/card_orb.png";
     // 小尺寸的能量图标（战斗中，牌堆预览）
-    private static final String energy_orb = "ExampleModResources/img/char/cost_orb.png";
+    private static final String ENEYGY_ORB = "ExampleModResources/img/char/cost_orb.png";
     private static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);
 
 
     public ExampleMod() {
             BaseMod.subscribe(this);
             // 这里注册颜色
-            BaseMod.addColor(EXAMPLE_CARD, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR,BG_ATTACK_512,BG_SKILL_512,BG_POWER_512,energy_orb,BG_ATTACK_1024,BG_SKILL_1024,BG_POWER_1024,big_orb,small_orb);
+            BaseMod.addColor(EXAMPLE_CARD, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR,BG_ATTACK_512,BG_SKILL_512,BG_POWER_512,ENEYGY_ORB,BG_ATTACK_1024,BG_SKILL_1024,BG_POWER_1024,BIG_ORB,SMALL_ORB);
     }
 ```
-*这里缺少一个卡牌颜色的枚举。将在下一章介绍。*<br>
+*这里缺少一个卡牌颜色的枚举`EXAMPLE_CARD`。将在下一章介绍。*<br>
 查看接下来一章了解如何添加新人物。
