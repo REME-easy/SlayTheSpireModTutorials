@@ -80,7 +80,7 @@ powers.json:
 {
   "ExampleMod:ExamplePower": {
     "NAME": "示例能力",
-    "DESCRIPTIONS": [ // 注意这里最后的S，很多新手都没注意所以出了问题！！！！！！！！！
+    "DESCRIPTIONS": [ // 注意这里最后的S，很人都没注意所以出了问题！！！！！！！！！
       "当你受到 #y未被格挡 的攻击伤害时，回复 #b",
       " 点生命。" // #y #b 表示把文本染成黄色和蓝色。
     ]

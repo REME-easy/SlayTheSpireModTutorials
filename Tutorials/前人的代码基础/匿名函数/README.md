@@ -71,6 +71,7 @@ public class ATestAction extends AbstractGameAction {
         if (this.target.hasPower(MarkPower.POWER_ID)) {
             AbstractPlayer p = AbstractDungeon.player; 
             addToTop(new GainBlockAction(p, p, this.target.getPower(MarkPower.POWER_ID).amount));
+            isDone = true;
         }
     }
 }
