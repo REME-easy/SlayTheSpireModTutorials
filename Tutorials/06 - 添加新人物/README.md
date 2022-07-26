@@ -221,6 +221,26 @@ public class MyCharacter extends CustomPlayer {
 }
 ```
 
+最下面我们添加了一些必要的枚举，你可以在你之前添加颜色的地方引用它。
+*如果你想让你的卡牌也使用这个颜色，也使用这个引用，并将*
+```java
+// 主类
+import static ModExample.Characters.MyCharacter.Enums.EXAMPLE_CARD;
+// 省略其他
+public ExampleMod() {
+            BaseMod.subscribe(this);
+            // 这里注册颜色
+            BaseMod.addColor(EXAMPLE_CARD, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR,BG_ATTACK_512,BG_SKILL_512,BG_POWER_512,ENEYGY_ORB,BG_ATTACK_1024,BG_SKILL_1024,BG_POWER_1024,BIG_ORB,SMALL_ORB);
+    }
+// 省略其他
+```
+```java
+// 卡牌类
+import static ModExample.Characters.MyCharacter.Enums.EXAMPLE_CARD;
+public class Strike extends CustomCard {
+    private static final CardColor COLOR = EXAMPLE_CARD;
+```
+
 和给卡牌添加本地化文本一样，我们需要给人物添加本地化内容。首先新建`characters.json`文件。
 
 * ExampleModResources

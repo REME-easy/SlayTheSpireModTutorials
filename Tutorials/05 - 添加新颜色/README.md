@@ -5,7 +5,7 @@
 ## 1.选择你的颜色
 根据你的人物颜色基调在modcore类新建一个RGB的`Color`颜色变量。如果你对什么是RGB颜色不熟悉，可以打开画图编辑颜色，右下角红绿蓝三色的数值经过计算后可以填入`Color`的构造函数。
 
-> 前三个参数表示RGB，范围为0.0~1.0。而画图中的RGB范围为0~255，所以前三个参数需要除以255。第四个参数表示透明度。
+> 前三个参数表示RGB，范围为0.0-1.0。而画图中的RGB范围为0-255，所以前三个参数需要除以255。第四个参数表示透明度。
 
 ![001](https://i.loli.net/2021/11/12/Y9oB4upTDtLblyk.png)
 
@@ -16,7 +16,7 @@ import com.badlogic.gdx.graphics.Color;
 
 public class ExampleMod implements EditCardsSubscriber {
     // 除以255得出需要的参数。你也可以直接写出计算值。
-    private static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);
+    public static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);
 
     public ExampleMod() {
         BaseMod.subscribe(this);
@@ -56,7 +56,7 @@ public class ExampleMod implements EditStringsSubscriber,EditCardsSubscriber {
     private static final String BIG_ORB = "ExampleModResources/img/char/card_orb.png";
     // 小尺寸的能量图标（战斗中，牌堆预览）
     private static final String ENEYGY_ORB = "ExampleModResources/img/char/cost_orb.png";
-    private static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);
+    public static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);
 
 
     public ExampleMod() {

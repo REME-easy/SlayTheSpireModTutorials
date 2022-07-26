@@ -12,7 +12,7 @@ public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber {
     private static final String big_orb = "ExampleModResources/img/char/card_orb.png";
     private static final String energy_orb = "ExampleModResources/img/char/cost_orb.png";
     
-    private static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);
+    public static final Color MY_COLOR = new Color(79.0F / 255.0F, 185.0F / 255.0F, 9.0F / 255.0F, 1.0F);
 
     public ExampleMod() {
         BaseMod.subscribe(this);
