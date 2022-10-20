@@ -36,9 +36,9 @@ cards.json:
 }
 ```
 
-<b>*这里的json注释是不合法的，请在你的文件中删掉json的注释！！！*</b>
+<b>*请在你的文件里删除括号及其里面的注释！！！！！！！！*</b>
 
-*你发现伤害数值需要用`!D!`代替，关键词前后需要有空格，并且不显示升级后的文本。这些内容在另外的章节介绍。*
+*你发现伤害数值需要用`!D!`代替，关键词前后需要有空格，并且不显示升级后的文本。这些内容在另外的章节介绍。（见新手必备知识-杀戮尖塔描述写法）*
 
 ## 2.注册资源和使用资源
 
@@ -97,6 +97,22 @@ public class Strike extends CustomCard {
 
 如果遇到任何错误，查看<b>查看报错信息</b>一节了解哪步出错了。也可以浏览其他mod是如何处理本地化文本的。
 
+## 升级描述
+
+如果你发现你的卡牌升级并没有改变描述，是因为你没有写这些：
+```java
+    @Override
+    public void upgrade() {
+        if (!this.upgraded) {
+            this.upgradeName();
+            this.upgradeDamage(3);
+
+            // 加上以下两行就能使用UPGRADE_DESCRIPTION了（如果你写了的话）
+            this.rawDescription = CARD_STRINGS.UPGRADE_DESCRIPTION;
+            this.initializeDescription();
+        }
+    }
+```
 
 <br><br><br>
 

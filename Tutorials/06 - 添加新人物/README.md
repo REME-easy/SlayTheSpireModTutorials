@@ -18,32 +18,32 @@ MyCharacter.java:
 // 继承CustomPlayer类
 public class MyCharacter extends CustomPlayer {
     // 火堆的人物立绘（行动前）
-    private static final String MY_CHARACTER_SHOULDER_1 = ModHelper.MakeAssetPath("img/char/shoulder1.png");
+    private static final String MY_CHARACTER_SHOULDER_1 = "ExampleModResources/img/char/shoulder1.png";
     // 火堆的人物立绘（行动后）
-    private static final String MY_CHARACTER_SHOULDER_2 = ModHelper.MakeAssetPath("img/char/shoulder2.png");
+    private static final String MY_CHARACTER_SHOULDER_2 = "ExampleModResources/img/char/shoulder2.png";
     // 人物死亡图像
-    private static final String CORPSE_IMAGE = ModHelper.MakeAssetPath("img/char/corpse.png");
+    private static final String CORPSE_IMAGE = "ExampleModResources/img/char/corpse.png";
     // 战斗界面左下角能量图标的每个图层
     private static final String[] ORB_TEXTURES = new String[]{
-            ModHelper.MakeAssetPath("img/UI/orb/layer5.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer4.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer3.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer2.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer1.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer6.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer5d.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer4d.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer3d.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer2d.png"),
-            ModHelper.MakeAssetPath("img/UI/orb/layer1d.png")
+            "ExampleModResources/img/UI/orb/layer5.png",
+            "ExampleModResources/img/UI/orb/layer4.png",
+            "ExampleModResources/img/UI/orb/layer3.png",
+            "ExampleModResources/img/UI/orb/layer2.png",
+            "ExampleModResources/img/UI/orb/layer1.png",
+            "ExampleModResources/img/UI/orb/layer6.png",
+            "ExampleModResources/img/UI/orb/layer5d.png",
+            "ExampleModResources/img/UI/orb/layer4d.png",
+            "ExampleModResources/img/UI/orb/layer3d.png",
+            "ExampleModResources/img/UI/orb/layer2d.png",
+            "ExampleModResources/img/UI/orb/layer1d.png"
     };
-    // 每个图层的旋转速度，没必要修改
+    // 每个图层的旋转速度
     private static final float[] LAYER_SPEED = new float[]{-40.0F, -32.0F, 20.0F, -20.0F, 0.0F, -10.0F, -8.0F, 5.0F, -5.0F, 0.0F};
     // 人物的本地化文本，如卡牌的本地化文本一样，如何书写见下
     private static final CharacterStrings characterStrings = CardCrawlGame.languagePack.getCharacterString("ExampleMod:MyCharacter");
 
     public MyCharacter(String name) {
-        super(name, MY_CHARACTER,ORB_TEXTURES,ModHelper.MakeAssetPath("img/UI/orb/vfx.png"), LAYER_SPEED, null, null);
+        super(name, MY_CHARACTER,ORB_TEXTURES,"ExampleModResources/img/UI/orb/vfx.png", LAYER_SPEED, null, null);
 
 
         // 人物对话气泡的大小，如果游戏中尺寸不对在这里修改（libgdx的坐标轴左下为原点）
@@ -53,7 +53,7 @@ public class MyCharacter extends CustomPlayer {
 
         // 初始化你的人物，如果你的人物只有一张图，那么第一个参数填写你人物图片的路径。
         this.initializeClass(
-                ModHelper.MakeAssetPath("img/char/character.png"), // 人物图片
+                "ExampleModResources/img/char/character.png", // 人物图片
                 MY_CHARACTER_SHOULDER_2, MY_CHARACTER_SHOULDER_1,
                 CORPSE_IMAGE, // 人物死亡图像
                 this.getLoadout(),
@@ -64,7 +64,7 @@ public class MyCharacter extends CustomPlayer {
 
 
         // 如果你的人物没有动画，那么这些不需要写
-        // this.loadAnimation(ModHelper.MakePath("img/char/character.atlas"), ModHelper.MakePath("img/char/character.json"), 1.8F);
+        // this.loadAnimation("ExampleModResources/img/char/character.atlas", "ExampleModResources/img/char/character.json", 1.8F);
         // AnimationState.TrackEntry e = this.state.setAnimation(0, "Idle", true);
         // e.setTime(e.getEndTime() * MathUtils.random());
         // e.setTimeScale(1.2F);
@@ -151,10 +151,10 @@ public class MyCharacter extends CustomPlayer {
     @Override
     public ArrayList<CutscenePanel> getCutscenePanels() {
         ArrayList<CutscenePanel> panels = new ArrayList<>();
-        // 两个参数的，第二个参数表示出现图片时播放的音效
-        panels.add(new CutscenePanel(ModHelper.MakeAssetPath("img/char/Victory1.png"), "ATTACK_MAGIC_FAST_1"));
-        panels.add(new CutscenePanel(ModHelper.MakeAssetPath("img/char/Victory2.png")));
-        panels.add(new CutscenePanel(ModHelper.MakeAssetPath("img/char/Victory3.png")));
+        // 有两个参数的，第二个参数表示出现图片时播放的音效
+        panels.add(new CutscenePanel("ExampleModResources/img/char/Victory1.png", "ATTACK_MAGIC_FAST_1"));
+        panels.add(new CutscenePanel("ExampleModResources/img/char/Victory2.png"));
+        panels.add(new CutscenePanel("ExampleModResources/img/char/Victory3.png"));
         return panels;
     }
 

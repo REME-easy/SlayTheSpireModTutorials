@@ -71,7 +71,7 @@ public class MyCharacter extends CustomPlayer {
 
 
         // 如果你的人物没有动画，那么这些不需要写
-        // this.loadAnimation(ModHelper.MakePath("ExampleModResources/img/char/character.atlas"), ModHelper.MakePath("ExampleModResources/img/char/character.json"), 1.8F);
+        // this.loadAnimation("ExampleModResources/img/char/character.atlas", "ExampleModResources/img/char/character.json", 1.8F);
         // AnimationState.TrackEntry e = this.state.setAnimation(0, "Idle", true);
         // e.setTime(e.getEndTime() * MathUtils.random());
         // e.setTimeScale(1.2F);
