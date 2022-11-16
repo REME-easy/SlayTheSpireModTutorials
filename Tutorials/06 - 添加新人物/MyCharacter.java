@@ -1,4 +1,4 @@
-// 省略部分import
+// 省略package路径和部分import，复制的时候不要忘记写上自己的package
 
 import basemod.abstracts.CustomPlayer;
 import com.badlogic.gdx.graphics.Color;

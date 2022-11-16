@@ -1,0 +1,357 @@
+# 杀戮尖塔 Mod 开发的 Patch 指南
+
+- [杀戮尖塔 Mod 开发的 Patch 指南](#杀戮尖塔-mod-开发的-patch-指南)
+  - [1. 概述](#1-概述)
+  - [2. SpirePatch 的一般规则](#2-spirepatch-的一般规则)
+    - [@SpirePatch 参数](#spirepatch-参数)
+    - [Patch 的加载顺序](#patch-的加载顺序)
+  - [3. 一般的 Patch 技术](#3-一般的-patch-技术)
+    - [Prefix](#prefix)
+      - [可用特性](#可用特性)
+    - [Postfix](#postfix)
+      - [可用特性](#可用特性-1)
+    - [Insert](#insert)
+      - [@SpireInsertPatch 参数](#spireinsertpatch-参数)
+      - [可用特性](#可用特性-2)
+      - [Locator](#locator)
+    - [Replace](#replace)
+    - [SpireField](#spirefield)
+    - [SpireOverride](#spireoverride)
+  - [4. Patch 可用的特性](#4-patch-可用的特性)
+    - [@ByRef](#byref)
+    - [Private Field Captures](#private-field-captures)
+      - [参数的顺序](#参数的顺序)
+    - [SpireReturn](#spirereturn)
+  - [5. 进阶 Patch 技术](#5-进阶-patch-技术)
+    - [Instrument](#instrument)
+    - [Raw](#raw)
+
+## 1. 概述
+
+本教程基于 ModTheSpire 的 Wiki 上所提供的 Patch 教程，攥写 Patch 需要有足够的 Java 和 Javassist 知识，对于其中涉及的 Java 原理，本教程不提供任何的解释。SpirePatch 允许 Mods 将自己的代码写入杀戮尖塔原本的代码中。当一个 Mod 被加载时，ModTheSpire 首先搜寻该 Mod 中所有带有 @SpirePatch 注解的类。也就是说，对于每个你想要插入代码的原版方法，你必须创建一个带有 @SpirePatch 注解的类。
+
+ModTheSpire 还提供了一个较新的 Patch 类型，SpirePatch2。它对 Patch 方法参数的处理方式与最基本的 SpirePatch 有所区别。在阅读 SpirePatch2 的指南前，你需要对 SpirePatch 的工作原理有足够的理解。当然，SpirePatch2 的指南你得自己上 ModTheSpire 的 Wiki 看，因为它本身没啥难度。
+
+本教程会介绍下列类型的 Patch：
+
+* [Prefix](#prefix)
+* [Postfix](#postfix)
+* [Insert](#insert)
+* [Replace](#Replace)
+* [SpireField](#spirefield)
+* [SpireOverride](#spireoverride)
+* [Instrument](#instrument)
+* [Raw](#raw)
+
+## 2. SpirePatch 的一般规则
+
+* Patch 类如果是**嵌套类**，那它必须是**静态嵌套类**。
+* Patch 方法必须是**静态方法**。
+* Patch 类需有 @SpirePatch 注解。
+* Patch 方法接收所有原方法的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收实例（Instance）参数。示例如下。
+
+```java
+public static void [Patch方法名]([实例类型] __instance, [参数列表]...) {...}
+```
+
+* Patch 方法按顺序接收参数，实例在前，然后是原方法的参数顺序。一般地，实例和参数名不影响接收的顺序。
+* Patch 方法接收参数的逻辑与一般的 Java 没有区别，即按值接收，而不是按引用接收。
+
+### @SpirePatch 参数
+
+* `clz` 定义包含需要 Patch 的原方法的类，接收 Class<?> 类型。
+* `cls` 定义包含需要 Patch 的原方法的类，接收 String 类型。必须是完整的类路径和类名。
+* `method` 定义需要 Patch 的原方法 [名] ，接收 String 类型。
+  * 使用 `SpirePatch.CONSTRUCTOR` 来定义构造体。
+  * 使用 `SpirePatch.STATICINITIALIZER` 来定义静态初始化块。
+  * 使用 `SpirePatch.CLASS` 来定义类。
+* `paramtypez` 定义需要 Patch 的原方法的参数类型，接收 Class<?> 类型的数组（当原方法有多个重载，即同名方法，时需要填写该参数，无参方法的写法为 `paramtypez = {}` ）
+* `paramtypes` 定义需要 Patch 的原方法的参数类型，接收 String 类型的数组。必须填写参数类型完整的类路径和类名。
+* `requiredModId` 定义该 Patch 方法加载时所需加载的 Mod 的 ID，接收 String 类型。
+  * 用于跨 Mod 直接进行 Patch.
+  * 当 Mod ID 所指明的 Mod 加载了但 Patch 失败时会产生错误。
+* `optional` 当设为 true 时，如果需要 Patch 的类和方法不存在时（例如跨 Mod 但另一个 Mod 未加载），该 Patch 会被忽略。
+  * 当 Patch 失败时不会产生错误。
+
+下面是对 AbstractPlayer 类中 useCard 方法 Patch 的示例。
+
+```java
+@SpirePatch(clz = AbstractPlayer.class, method = "useCard", 
+            paramtypez = {AbstractCard.class, AbstractMonster.class, int.class})
+public class ExamplePatch {
+    ...
+}
+```
+
+注意，原方法 useCard 并无重载，因此 paramtypez 不是必填的。
+
+### Patch 的加载顺序
+
+Patch 首先按类型进行加载，然后按 Mod 顺序进行加载。按类型加载的先后顺序为：Insert，Instrument，Replace，Prefix，Postfix，Raw. 这意味着所有的 Insert Patch 都会在 Instrument Patch 之前加载，等等。如果有 2 个及以上正在加载的 Mod 同时定义了相同类型的 Patch ，这些 Patch 会按 Mod 在 ModTheSpire 中的顺序进行加载。如果一个 Mod 定义多个相同类型的 Patch，这些 Patch 会按任意顺序加载。
+
+
+
+## 3. 一般的 Patch 技术
+
+
+
+### Prefix
+
+------
+
+Prefix 会在原方法的最开始插入你的 Patch 方法。
+
+你可以使用 `@SpirePrefixPatch` 注解来定义一个 Prefix 类型的 Patch 方法。
+
+<font color = red>注意，ModTheSpire 优先按照 Patch 方法名判断该 Patch 的类型，因此一个方法名为 Postfix 但带有 `@SpirePrefixPatch` 注解的 Patch 方法会被视为 Postifx 而不是 Prefix.</font>  部分其他类型的 Patch 同样适用该规则，下不提醒。
+
+下面是对 AbstractPlayer 中的 draw 方法插入 Prefix Patch 的实例，以及插入前和插入后反编译出的源码效果。注意 draw 方法有 2 个重载，因此需要填写 paramtypez 参数。往后 Patch 实例不再详细解释。
+
+[![zZ2of1.md.png](https://s1.ax1x.com/2022/11/16/zZ2of1.md.png)](https://imgse.com/i/zZ2of1)
+
+[![zZ27Sx.png](https://s1.ax1x.com/2022/11/16/zZ27Sx.png)](https://imgse.com/i/zZ27Sx)
+
+[![zZ2Hl6.png](https://s1.ax1x.com/2022/11/16/zZ2Hl6.png)](https://imgse.com/i/zZ2Hl6)
+
+#### 可用特性
+
+* [@ByRef](#byref)
+* [Private Field Captures](#private-field-captures)
+* [SpireReturn](#spirereturn)
+
+### Postfix
+
+------
+
+Posfix 会在原方法的最后插入你的 Patch 方法。如果原方法有返回值的话，那么 Postfix 总会在 return 之前插入，这意味这你可以通过 Posfix 更改原方法的返回值，即 retVal = postfix( foobar(params) ).
+
+若要修改原方法的返回值，可在 Patch 方法的参数列表中添加一个类型为原方法返回值类型的参数，该参数必须是 Patch 方法的第一个参数。
+
+你可以使用 `@SpirePostfixPatch` 注解来定义一个 Postfix 类型的 Patch 方法，或是将方法名写成 Postfix.
+
+[![zZ2hTJ.md.png](https://s1.ax1x.com/2022/11/16/zZ2hTJ.md.png)](https://imgse.com/i/zZ2hTJ)
+
+[![zZ2IYR.md.png](https://s1.ax1x.com/2022/11/16/zZ2IYR.md.png)](https://imgse.com/i/zZ2IYR)
+
+#### 可用特性
+
+* [@ByRef](#byref)
+* [Private Field Captures](#private-field-captures)
+
+### Insert
+
+------
+
+Insert 允许你在原方法中间的任意位置插入你的 Patch 方法。Insert 总是在你给出的位置**之前**插入 Patch 方法。
+
+**必须**使用 `@SpireInsertPatch` 注解来定义一个 Insert 类型的 Patch 方法。ModTheSpire 不会依据方法名判断该方法是否为 Insert 类型的 Patch 方法。
+
+#### @SpireInsertPatch 参数
+
+`loc` 、`rloc` 和 `locator` 三者中**必须有 1 个且同时只能有 1 个**参数被赋值。这三个参数都是用于让 ModTheSpire 知道你的 Patch 方法要在原方法的何处插入。其中 `loc` 是插入位置的绝对行数，`rloc` 是插入位置的相对行数，而 `locator` 是对插入位置的一个定位。你可以通过反编译来获取相应的行数。JD-GUI 反编译出的代码行数较为准确，推荐使用 JD-GUI. 如果碰上 JD-GUI 无法反编译的类或是 JD-GUI 反编译有明显错误的地方，可以使用 Luyten 进行反编译。
+
+下面以 print 方法为模板，对 `loc` 和 `rloc` 进行说明。
+
+```java
+		public void print(params) {
+120:		System.out.println("A");
+121:		System.out.println("B");
+			...
+125:		System.out.println("F");
+            // 在此处插入代码
+126:		System.out.println("F");  
+    	}
+```
+
+对于 `loc` ，你只需要传入绝对行数，即 `loc = 126` 行。若要使用 `rloc` ，那么你需要用该行的行数减掉原方法第一行的行数，在此例中为 126 - 120 = 6，即 `rloc = 6`. 也就是说，`rloc = 0` 意味着该 Insert Patch 会被插到原方法的开头。 一般来说，使用相对行数 `rloc` 的稳定性相较于使用绝对行数 `loc` 的稳定性高些，因此建议优先使用 `rloc` 而不是 `loc`.
+
+你如果要在原方法的多个位置插入同样的 Patch 方法，那么可以使用 `locs` 或 `rlocs` 参数，两者均接收整形数组，例如 `locs = {121, 126}`. 使用 `locs` 或 `rlocs` 时，无需再定义 `loc` 和 `rloc`.
+
+正如前面提到，Insert 类型的 Patch 方法会在给出的位置插入。插入后编译出的代码行数不会改变，也就是，允许多个 Insert Patch 插入同一行，先后顺序以 Mod 顺序为准，即
+
+```java
+126:	insert1(params);insert2(params);insert3(params);System.out.println("F");  
+```
+
+* `loc` 定义插入位置的绝对行数，从类文件的开头开始计算。
+* `rloc` 定义插入位置相对于原方法开头的行数。
+* `locs` 定义多个插入位置的绝对行数的数组。
+* `rlocs` 定义多个插入位置的相对行数的数组。
+* `localvars` 用于捕获任何局部变量并传递给 Patch 方法。捕获的变量以参数的形式传递给 Patch 方法，变量的参数在原方法参数之后。捕获的变量**必须在 Patch 方法插入的位置之前已经声明**。
+
+[![zZ2sWq.png](https://s1.ax1x.com/2022/11/16/zZ2sWq.png)](https://imgse.com/i/zZ2sWq)
+
+[![zZ2gyT.md.png](https://s1.ax1x.com/2022/11/16/zZ2gyT.md.png)](https://imgse.com/i/zZ2gyT)
+
+#### 可用特性
+
+* [@ByRef](#byref)
+* [Private Field Captures](#private-field-captures)
+* [SpireReturn](#spirereturn)
+
+#### Locator
+
+前面提到，`rloc` 的稳定性要优于 `loc`. 在很久以前，杀戮尖塔还经常更新的时候，代码改动导致行数变化是经常的事，这就可能会导致 `rloc` 在某次更新后定位到错误的位置。又或者，当 JD-GUI 的反编译出先问题，或你把握不准行数时，`rloc` 也有可能定位到错误的位置。你可以使用 `Locator` 来对插入位置进行一个定位。Locator 采用 Javassist 提供的 API ，传递原方法的 CtBehavior，并按照使用者给出的条件进行定位。Locator 会返回一个包含可能位置的行数的数组，该数组会被用于确定 Insert 类型的 Patch 方法的插入位置。通过填写 `@SpireInsertPatch` 的 `locator` 参数，你可以指定一个 Insert Patch 所要使用的 Locator. 当使用 `locator` 时，正如前文所述，你不能再定义 `loc` 或 `rloc` 等其他定位用的参数。
+
+Locator 优于 `rloc` 的一点是，它允许你通过游戏代码的逻辑去定位，再此不过多赘述。
+
+ModTheSpire 提供了一个有助于在 Locator 中快速定位行数的 API，`LineFinder`. LineFinder 提供了两个方法 `findInOrder` 和 `findAllInOrder` ，前者用于找到***首个***符合条件的位置所在的行数，后者用于按顺序找到***所有***符合条件的位置行数。条件由参数 `List<Matcher> expectedMatches` 和 `Matcher finalMatcher` 限定。Matcher 是一个工具类，提供了用于寻找代码中某个逻辑的便捷方法。
+
+下面是对 AbstractCard 类中的 calculateCardDamage 方法插入使用了 Locator 的 Insert Patch 的示例。其中 Locator 用于定位从原方法的参数 `mo` 中第二次调用的域 `powers` 的所在的位置。
+
+[![zZ26S0.png](https://s1.ax1x.com/2022/11/16/zZ26S0.png)](https://imgse.com/i/zZ26S0)
+
+[![zZ22OU.png](https://s1.ax1x.com/2022/11/16/zZ22OU.png)](https://imgse.com/i/zZ22OU)
+
+[![zZ2Hl6.png](https://s1.ax1x.com/2022/11/16/zZ2Hl6.png)](https://imgse.com/i/zZ2Hl6)
+
+除了在 Insert Patch 中使用，Locator 以及 LineFinder 还可以在类似 Instrument 和 Raw 这类允许你直接使用 Javassist 的 Patch 中使用，即 Locator 和 LineFinder 并非 Insert 的限定工具。
+
+更多类型的 Matcher 的介绍，请自己去翻 ModTheSpire 的 Wiki 上的[说明](https://github.com/kiooeht/ModTheSpire/wiki/Matcher)。
+
+### Replace
+
+------
+
+Replace 会用 Patch 方法将原方法**完全替换**掉。在程序运行过程中，原方法体中的代码**全都不会**被调用，而是调用 Patch 方法，即 foobar(params) 会变成 replace(params). 下面的 Replace Patch 会完全替换掉 CardLibrary 类中 `getCardList` 方法的原代码。
+
+[![zZ2qOO.png](https://s1.ax1x.com/2022/11/16/zZ2qOO.png)](https://imgse.com/i/zZ2qOO)
+
+注意，按照 ModTheSpire 加载 Patch 的顺序，Replace 会覆盖掉对同一个方法生效的所有 Insert 和 Instrument 类型的 Patch.
+
+警告：不要使用 Replace 类型的 Patch，除非是万不得已的情况。Replace 的破坏性会导致原方法的其他 Patch 失效或产生其他意料之外的效果。
+
+### SpireField
+
+------
+
+SpireField 提供了一种为原版游戏中原先存在的类添加新的域的便捷方式。
+
+SpireField 也是一种 Patch，因此需要将其写在一个 Patch 类内，但 @SpirePatch 的参数中的 `method` 需要使用 `SpirePatch.CLASS` 定义。
+
+下例在 AbstractCard 类中新添加了一个类型为 String，名称中包含 example 的域。
+
+[![zZ2OmD.png](https://s1.ax1x.com/2022/11/16/zZ2OmD.png)](https://imgse.com/i/zZ2OmD)
+
+注意，新添加的域的名称在编译后的代码中并不完全和你在代码中写的名称一样。因为， 为了防止出现多个域同名的情况，ModTheSpire 会使用索引变更你提供的名称，因此不应该使用反射按照域的名称获取你添加的域。
+
+可通过下面的方式访问和修改你添加的域：
+
+[![zZ2jTH.png](https://s1.ax1x.com/2022/11/16/zZ2jTH.png)](https://imgse.com/i/zZ2jTH)
+
+在添加基本数据类型的域时，需要使用其对应的包装类。
+
+使用 SpireField 添加的域为动态域，要添加静态域需使用 StaticSpireField. 两者用法相差不大，这里不过多赘述。
+
+### SpireOverride
+
+------
+
+SpireOverride 提供了重写父类私有方法的手段。例如：
+
+```java
+class A {
+    private int baz(int i) { return i; }
+}
+class B extends A {
+    // 不允许
+    @Override
+    private int baz(int i) { return i + 1; }
+    
+    // 可行
+    @SpireOverride
+    protected int baz(int i) { return i + 1; }
+}
+```
+
+要在这类重写方法中调用父类的实现，使用 `SpireSuper.call(params)` 而不是 `super.method(params)`.
+
+
+
+## 4. Patch 可用的特性
+
+### @ByRef
+
+ByRef 允许 Patch 方法按引用接收参数的方法，当然，不是真的按引用接收，只是提供了变相修改参数引用的手段。ByRef 的参数以一个单一元素数组的形式传递给 Patch 方法。
+
+* ByRef 适用于 Prefix、Postfix 和 Insert 类型的 Patch
+* 参数前使用 `@ByRef` 注解以标明该参数为 ByRef 参数
+
+[![zZ2clV.png](https://s1.ax1x.com/2022/11/16/zZ2clV.png)](https://imgse.com/i/zZ2clV)
+
+### Private Field Captures
+
+Private Field Captures（PFC） 是 ModTheSpire 提供的一个特性，允许 Patch 将原方法所在类的私有域作为参数接收。
+
+要接收某个私有域，需在 Patch 方法的参数列表中写入，与该私有域的变量名**同名同类型**的参数，并且该参数前需带有三个下划线，即 `fieldName` 写成 `___fieldName`.
+
+* Prefix、Postfix 和 Insert 均可捕获私有域
+* 接收私有域的参数写在原方法的参数之后
+* 捕获的私有域可用 `@ByRef` 注解
+
+#### 参数的顺序
+
+Insert 类型的 Patch 方法中，PFC 的参数必须在任何接收局部变量的参数之前。即 Patch 方法的参数顺序应为：
+
+1. 实例参数（若方法为非静态方法）
+2. 原方法的参数
+3. 接收私有域的参数
+4. 接收局部变量的参数
+
+[![zZ2fw4.png](https://s1.ax1x.com/2022/11/16/zZ2fw4.png)](https://imgse.com/i/zZ2fw4)
+
+### SpireReturn
+
+SpireReutn 允许 Patch 方法在原方法中提前调用 `return` 语句。
+
+* SpireReturn 适用于 Prefix 和 Insert 类型的 Patch .（用脑子想想为什么不适用于 Postfix）
+
+[![zZ2xkd.png](https://s1.ax1x.com/2022/11/16/zZ2xkd.png)](https://imgse.com/i/zZ2xkd)
+
+对于原方法返回值类型为基本数据类型的方法，需使用其对应的包装类定义 SpireReturn，例如：
+
+```java
+public static SpireReturn<Boolean> Insert() {...}
+```
+
+
+
+## 5. 进阶 Patch 技术
+
+前文介绍的 Prefix、Postfix、Insert 和 Replace 类型的 Patch，只需读者有一定的 Java 基础就能勉强使用。下面介绍的 Instrument 和 Raw 类型的 Patch 需要读者有一定的 Javassist 基础才能使用。同样地，本教程不过多对 Javassist 的内容进行教学。
+
+
+
+### Instrument
+
+------
+
+Instrument 允许你修改原方法中的代码，例如移除或替换某个方法的调用，或是修改等。详细的教程见：https://www.javassist.org/tutorial/tutorial2.html#alter
+
+ModTheSpire 提供的 Instrument 是简化过的，只允许返回 ExprEditor. Patch 方法返回的 ExprEditor 会被用作原方法的 CtBehavior 的 instrument 方法的参数。想要更自由地使用 Instrument，需使用 Raw 类型的 Patch.
+
+你可以使用 `@SpireInstrumentPatch` 注解来定义一个 Instrument 类型的 Patch 方法，或是将方法名写成 Instrument.
+
+下面是对 UseCardAction 中的一个构造体进行修改的简单的 Instrument Patch. 当调用的方法名为`onUse` 或 `triggerOnCardPlayed` 和接收的参数符合一定的条件时，原调用方法才可被调用。
+
+[![zZ25k9.png](https://s1.ax1x.com/2022/11/16/zZ25k9.png)](https://imgse.com/i/zZ25k9)
+
+Instrument 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
+
+### Raw
+
+------
+
+Raw 放宽了条件，允许你更自由地使用 Javassist 提供的 API 进行低水平的修改，例如修改字节码。ModTheSpire 会将原方法的 CtBehavior 作为参数传递给 Raw 类型的 Patch 方法，然后你就可以自由地使用 Javassist 修改原版的代码。详细的说明见 [CtBehavior 的 Javadoc](http://www.javassist.org/html/javassist/CtBehavior.html) 和 [Javassist 的教程](https://www.javassist.org/tutorial/tutorial.html)。
+
+你可以使用 `@SpireRawPatch` 注解来定义一个 Instrument 类型的 Patch 方法，或是将方法名写成 Raw.
+
+Raw Patch 允许访问字节码水平的修改，例如通过传递 CodeConvertor 作为 instrument 的参数，在遍历到某个符合条件的字节码时对源代码进行修改。下面是允许格挡突破 999 层上限的简单示例，可通过修改源代码中判断格挡层数的代码达成。
+
+[![zZ2b6K.png](https://s1.ax1x.com/2022/11/16/zZ2b6K.png)](https://imgse.com/i/zZ2b6K)
+
+又或者为其他类添加新的方法，打上新的注解等。
+
+[![zZ2X0e.png](https://s1.ax1x.com/2022/11/16/zZ2X0e.png)](https://imgse.com/i/zZ2X0e)
+
+同样地，Raw 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
