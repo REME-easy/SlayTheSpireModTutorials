@@ -1,5 +1,7 @@
 # 杀戮尖塔 Mod 开发的 Patch 指南
 
+（本文作者：RS76）
+
 - [杀戮尖塔 Mod 开发的 Patch 指南](#杀戮尖塔-mod-开发的-patch-指南)
   - [1. 概述](#1-概述)
   - [2. SpirePatch 的一般规则](#2-spirepatch-的一般规则)
