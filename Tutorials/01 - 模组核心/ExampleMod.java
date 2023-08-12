@@ -1,4 +1,4 @@
-package ExampleMod.ModCore;
+package examplemod.modcore;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 

@@ -9,7 +9,7 @@
 ```java
 public class ExamplePower extends AbstractPower {
     // 能力的ID
-    public static final String POWER_ID = ModHelper.MakePath("ExamplePower");
+    public static final String POWER_ID = ModHelper.makePath("ExamplePower");
     // 能力的本地化字段
     private static final PowerStrings powerStrings = CardCrawlGame.languagePack.getPowerStrings(POWER_ID);
     // 能力的名称

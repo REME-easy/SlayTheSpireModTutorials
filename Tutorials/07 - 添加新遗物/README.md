@@ -17,11 +17,11 @@
 首先创建一个文件夹管理遗物类，再创建一个遗物类。
 
 * ModExample
-    * Actions
-    * Cards
-    * Characters
-    * ModCore
-    * <b>Relics</b>
+    * actions
+    * cards
+    * characters
+    * modcore
+    * <b>relics</b>
         * <b>MyRelic.java</b> <-
 
 MyRelic.java:
@@ -29,7 +29,7 @@ MyRelic.java:
 // 继承CustomRelic
 public class MyRelic extends CustomRelic {
     // 遗物ID
-    public static final String ID = ModHelper.MakePath("MyRelic");
+    public static final String ID = ModHelper.makePath("MyRelic");
     // 图片路径
     private static final String IMG_PATH = "ExampleModResources/img/relics/MyRelic.png";
     // 遗物类型

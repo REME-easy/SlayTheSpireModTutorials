@@ -44,9 +44,9 @@ pom.xml:
     <modelVersion>4.0.0</modelVersion>
 
     <!-- 改成你需要的名称 -->
-    <groupId>ExampleMod</groupId>
+    <groupId>example-mod</groupId>
     <!-- 改成你需要的名称 -->
-    <artifactId>ExampleMod</artifactId>
+    <artifactId>example-mod</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

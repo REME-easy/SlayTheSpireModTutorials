@@ -6,10 +6,10 @@
 
 首先，你需要创建一个卡牌类。在那之前创建一个文件夹管理所有卡牌。<br>
 
-* ModExample
-    * Cards
+* examplemod
+    * cards
         * Strike.java
-    * ModCore
+    * modcore
 
 要让java或basemod知道你这个类是一张卡牌，你需要继承CustomCard类。<br>
 

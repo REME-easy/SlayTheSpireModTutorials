@@ -73,6 +73,8 @@ public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber {
 }
 ```
 
+<i>你可以自己尝试改成根据语言名字读取文件，而不是上面的ifelse类型的。</i>
+
 这样资源就成功加入了。接下来我们修改打击的代码，让它使用本地化资源。
 
 Strike.java:
@@ -127,15 +129,15 @@ public class Strike extends CustomCard {
 
 为了偷懒，你可以写一个帮手方法。首先创建一个帮手类。
 
-* ModCore
-* Cards
-* Helpers
+* modcore
+* cards
+* helpers
     * ModHelper.java <-这里
 
 ModHelper.java:
 ```java
 public class ModHelper {
-    public static String MakePath(String id) {
+    public static String makePath(String id) {
         return "ExampleMod:" + id;
     }
 }
@@ -144,7 +146,7 @@ public class ModHelper {
 通过调用这个方法，你就只需要写实际的ID了。
 
 ```java
-    public static final String ID = ModHelper.MakePath("Strike");
+    public static final String ID = ModHelper.makePath("Strike");
     // ID 实际等于 "ExampleMod:Strike"
 ```
 
@@ -153,7 +155,7 @@ public class ModHelper {
 通常，你的卡牌名和类名是一致的，所以直接获取类名即可，此外还可以骗过文本编辑器，让它在复制时直接修改类名，就不用修改ID了。
 
 ```java
-    public static final String ID = ModHelper.MakePath(Strike.class.getSimpleName());
+    public static final String ID = ModHelper.makePath(Strike.class.getSimpleName());
 ```
 
 ### 小帮手
@@ -168,7 +170,7 @@ public class ModHelper {
 Strike.java:
 ```java
 public class Strike extends CustomCard {
-    public static final String ID = ModHelper.MakePath("Strike");
+    public static final String ID = ModHelper.makePath("Strike");
     private static final CardStrings CARD_STRINGS = CardCrawlGame.languagePack.getCardStrings(ID);
     private static final String NAME = CARD_STRINGS.NAME;
     private static final String IMG_PATH = "";
@@ -181,7 +183,7 @@ public class Strike extends CustomCard {
 }
 ```
 
-哦，我的老伙计，（翻译腔）要是你比较一张牌的ID，直接调用这个常量难道不比手写方便的很多吗？
+直接调用这个常量难道不比手写方便很多。
 ```java
     card.cardID == "ExampleMod:Strike" // no
     Strike.ID.equals(card.cardID)// yes

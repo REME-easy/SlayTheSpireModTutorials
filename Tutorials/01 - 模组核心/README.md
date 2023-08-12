@@ -4,14 +4,14 @@
 
 ## 1.创建你的模组核心类
 
-首先创建一个你的mod文件夹（idea为目录右键new package），并在其中创建一个ModCore类。（*它的命名可以由你随意更改*）<br>
+首先创建一个你的mod文件夹（idea为目录右键new package），并在其中创建一个modcore类。（*它的命名可以由你随意更改*）<br>
 
 项目结构看起来像这样：<br>
 * src
     * main
         * java
-            * ModExample(套一层文件夹防止和其他mod重名)
-                * ModCore
+            * examplemod(套一层文件夹防止和其他mod重名)
+                * modcore
                     * ExampleMod.java
 
 ExampleMod.java:
