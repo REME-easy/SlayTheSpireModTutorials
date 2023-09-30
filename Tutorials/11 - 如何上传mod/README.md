@@ -14,7 +14,8 @@
     5. `tags`为你mod的标签。可以上工坊看看有哪些常用标签，你写其他的也行。例子：`"tags": ["Character", "English"]`
 </br>
 <b>所有这些设置，都不能写中文，否则工坊里会乱码。</b>
-* 将你mod的jar放入`content`文件夹告诉程序你要上传什么。此外也可以自己设置`pom.xml`，打包后自动复制一份到该目录。
+
+<b>将你mod的jar放入`content`文件夹告诉程序你要上传什么。此外也可以自己设置`pom.xml`，打包后自动复制一份到该目录。</b>
 
 4. 回到根目录，打开cmd，输入`java -jar mod-uploader.jar upload -w [你mod的名字]`上传你的mod。上传完成后过一段时间就能看到你的mod了。
 
