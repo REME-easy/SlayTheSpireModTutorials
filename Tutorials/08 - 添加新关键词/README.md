@@ -42,6 +42,7 @@ public class ExampleMod implements EditKeywordsSubscriber {
         Keyword[] keywords = gson.fromJson(json, Keyword[].class);
         if (keywords != null) {
             for (Keyword keyword : keywords) {
+                // 这个id要全小写
                 BaseMod.addKeyword("examplemod", keyword.NAMES[0], keyword.NAMES, keyword.DESCRIPTION);
             }
         }
