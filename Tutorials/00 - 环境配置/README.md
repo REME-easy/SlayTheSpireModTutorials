@@ -22,12 +22,12 @@ https://www.jetbrains.com/idea/download/#section=windows
 
 2. 创建新项目<br>
 
-安装完成后打开idea，点击Create New Project创建新项目。如果你下载了其他人的样板代码，可以通过Import Project导入。<br>
-![002](https://i.loli.net/2021/11/09/HRA8rxc5Wgi3kKs.png)
+安装完成后打开idea，点击New Project创建新项目。如果你下载了其他人的样板代码，可以通过Open导入。<br>
+![002](https://s2.loli.net/2023/10/04/WXTPfl16ICBoktJ.png)
 
 
 如图，创建一个maven项目。注意jdk版本。<br>
-![003](https://i.loli.net/2021/11/10/xGDHjOqhYTV1wa4.png)
+![003](https://s2.loli.net/2023/10/04/hvyLNbQFlfkrWqu.png)
 
 3. 创建配置文件<br>
 
