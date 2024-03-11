@@ -19,6 +19,7 @@
     - [Replace](#replace)
     - [SpireField](#spirefield)
     - [SpireOverride](#spireoverride)
+    - [SpireEnum](#spireenum)
   - [4. Patch 可用的特性](#4-patch-可用的特性)
     - [@ByRef](#byref)
     - [Private Field Captures](#private-field-captures)
@@ -27,6 +28,8 @@
   - [5. 进阶 Patch 技术](#5-进阶-patch-技术)
     - [Instrument](#instrument)
     - [Raw](#raw)
+  - [6. 编译 Patch 后的代码](#6-编译-patch-后的代码)
+  - [FAQ](#faq)
 
 ## 1. 概述
 
@@ -39,40 +42,48 @@ ModTheSpire 还提供了一个较新的 Patch 类型，SpirePatch2。它对 Patc
 * [Prefix](#prefix)
 * [Postfix](#postfix)
 * [Insert](#insert)
-* [Replace](#Replace)
+* [Replace](#replace)
 * [SpireField](#spirefield)
 * [SpireOverride](#spireoverride)
+* [SpireEnum](#spireenum)
 * [Instrument](#instrument)
 * [Raw](#raw)
+
+对于刚入门 Mod 制作且想要写 Patch 的新手，请**仔细并认真且耐心地一步步地从头到尾一字不拉地同时完完全全地在不跳行、不跳字的情况下**阅读完本篇教程。
+
+对于刚写 Patch 时遇到难以解决的问题的新手，在阅读完教程的主要部分后，请先**仔细并认真且耐心地一步步地从头到尾一字不拉地同时完完全全地在不跳行、不跳字的情况下**阅读 [FAQ](#faq) 部分。
+
+若 FAQ 部分无法解答你的疑惑，可以到 Mod 交流群**直接说出**你想要实现的具体效果并贴出你为了实现这个效果正在写的 Patch 代码进行提问。
 
 ## 2. SpirePatch 的一般规则
 
 * Patch 类如果是**嵌套类**，那它必须是**静态嵌套类**。
 * Patch 方法必须是**静态方法**。
 * Patch 类需有 @SpirePatch 注解。
-* Patch 方法接收所有原方法的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收实例（Instance）参数。示例如下。
+* Patch 方法接收所有**原方法（被 Patch 的方法）**的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收（被）Patch 的**原方法所属的类的实例**（Instance）参数。示例如下。
 
 ```java
 public static void [Patch方法名]([实例类型] __instance, [参数列表]...) {...}
 ```
 
-* Patch 方法按顺序接收参数，实例在前，然后是原方法的参数顺序。一般地，实例和参数名不影响接收的顺序。
-* Patch 方法接收参数的逻辑与一般的 Java 没有区别，即按值接收，而不是按引用接收。
+* Patch 方法**按顺序**接收参数，实例在前，然后是**原方法的参数顺序**。一般地，实例和参数名不影响接收的顺序。
+* Patch 方法接收参数的逻辑与一般的 Java 没有区别，即**按值接收**，而不是按引用接收。
+  * Java 方法接收的参数是原值 A 的一个复制 A1，A 和 A1 指向同个引用。因此修改 A1.value 也会同时修改 A.value，但给 A1 赋新值并不影响 A 本身。
 
 ### @SpirePatch 参数
 
-* `clz` 定义包含需要 Patch 的原方法的类，接收 Class<?> 类型。
-* `cls` 定义包含需要 Patch 的原方法的类，接收 String 类型。必须是完整的类路径和类名。
-* `method` 定义需要 Patch 的原方法 [名] ，接收 String 类型。
+* `clz` 定义包含需要（被）Patch 的原方法的类，接收 Class<?> 类型。
+* `cls` 定义包含需要（被）Patch 的原方法的类，接收 String 类型。必须是完整的类路径和类名。
+* `method` 定义需要（被）Patch 的原方法 [名] ，接收 String 类型。
   * 使用 `SpirePatch.CONSTRUCTOR` 来定义构造体。
   * 使用 `SpirePatch.STATICINITIALIZER` 来定义静态初始化块。
   * 使用 `SpirePatch.CLASS` 来定义类。
-* `paramtypez` 定义需要 Patch 的原方法的参数类型，接收 Class<?> 类型的数组（当原方法有多个重载，即同名方法，时需要填写该参数，无参方法的写法为 `paramtypez = {}` ）
-* `paramtypes` 定义需要 Patch 的原方法的参数类型，接收 String 类型的数组。必须填写参数类型完整的类路径和类名。
+* `paramtypez` 定义需要（被）Patch 的原方法的参数类型，接收 Class<?> 类型的数组（当原方法有多个重载，即同名方法，时需要填写该参数，无参方法的写法为 `paramtypez = {}` ）
+* `paramtypes` 定义需要（被）Patch 的原方法的参数类型，接收 String 类型的数组。必须填写参数类型完整的类路径和类名。
 * `requiredModId` 定义该 Patch 方法加载时所需加载的 Mod 的 ID，接收 String 类型。
   * 用于跨 Mod 直接进行 Patch.
   * 当 Mod ID 所指明的 Mod 加载了但 Patch 失败时会产生错误。
-* `optional` 当设为 true 时，如果需要 Patch 的类和方法不存在时（例如跨 Mod 但另一个 Mod 未加载），该 Patch 会被忽略。
+* `optional` 当设为 true 时，如果需要（被）Patch 的类和方法不存在时（例如跨 Mod 但另一个 Mod 未加载），该 Patch 会被忽略。
   * 当 Patch 失败时不会产生错误。
 
 下面是对 AbstractPlayer 类中 useCard 方法 Patch 的示例。
@@ -81,7 +92,10 @@ public static void [Patch方法名]([实例类型] __instance, [参数列表]...
 @SpirePatch(clz = AbstractPlayer.class, method = "useCard", 
             paramtypez = {AbstractCard.class, AbstractMonster.class, int.class})
 public class ExamplePatch {
-    ...
+    @SpirePrefixPatch
+    public static void Prefix(AbstractPlayer __instance, AbstractCard c, AbstractMonster m, int e) {
+        ...
+    }
 }
 ```
 
@@ -127,7 +141,7 @@ Prefix 会在原方法的最开始插入你的 Patch 方法。
 
 Posfix 会在原方法的最后插入你的 Patch 方法。如果原方法有返回值的话，那么 Postfix 总会在 return 之前插入，这意味这你可以通过 Posfix 更改原方法的返回值，即 retVal = postfix( foobar(params) ).
 
-若要修改原方法的返回值，可在 Patch 方法的参数列表中添加一个类型为原方法返回值类型的参数，该参数必须是 Patch 方法的第一个参数。
+若要修改原方法的返回值，可在 Patch 方法的参数列表中添加一个类型为原方法返回值类型的参数，**该参数必须是 Patch 方法的第一个参数**。
 
 你可以使用 `@SpirePostfixPatch` 注解来定义一个 Postfix 类型的 Patch 方法，或是将方法名写成 Postfix.
 
@@ -268,6 +282,30 @@ class B extends A {
 
 要在这类重写方法中调用父类的实现，使用 `SpireSuper.call(params)` 而不是 `super.method(params)`.
 
+### SpireEnum
+
+------
+
+SpireEnum 是一种为尖塔源码中已有的枚举类添加新枚举值的手段，通过为一个静态域打上 `@SpireEnum` 注解来将该域变为原有枚举类的枚举值，同时，**该静态域的类型必须是目标枚举类型**。例如，为原版的枚举类 `AbstractPlayer.PlayerClass` 添加一个名为 `My_New_Player_Class` 的枚举，演示代码如下：
+
+```java
+public class MyEnums {
+    @SpireEnum(name = "My_New_Player_Class")
+    public static AbstractPlayer.PlayerClass MY_PLAYER;
+}
+```
+
+上面的例子中，若 SpireEnum 的参数 `name` 留空（即不写），那么被新加进去的枚举名即为变量名，即 `MY_PLAYER` 而不是 `My_New_Player_Class`.
+
+要在你的代码中调用由 SpireEnum 新加的枚举，按照调用静态域的方法来调用即可：
+
+```java
+public void foobar(AbstractPlayer.PlayerClass playerClass) {
+    if (playerClass == MyEnums.MY_PLAYER) {
+        ...
+    }
+}
+```
 
 
 ## 4. Patch 可用的特性
@@ -320,7 +358,7 @@ public static SpireReturn<Boolean> Insert() {...}
 
 ## 5. 进阶 Patch 技术
 
-前文介绍的 Prefix、Postfix、Insert 和 Replace 类型的 Patch，只需读者有一定的 Java 基础就能勉强使用。下面介绍的 Instrument 和 Raw 类型的 Patch 需要读者有一定的 Javassist 基础才能使用。同样地，本教程不过多对 Javassist 的内容进行教学。
+前文介绍的 Prefix、Postfix、Insert 和 Replace 类型的 Patch，只需读者有一定的 Java 基础就能勉强使用。**下面介绍的 Instrument 和 Raw 类型的 Patch 需要读者有一定的 Javassist 基础才能使用。同样地，本教程不过多对 Javassist 的内容进行教学**。
 
 
 
@@ -346,7 +384,7 @@ Instrument 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
 
 Raw 放宽了条件，允许你更自由地使用 Javassist 提供的 API 进行低水平的修改，例如修改字节码。ModTheSpire 会将原方法的 CtBehavior 作为参数传递给 Raw 类型的 Patch 方法，然后你就可以自由地使用 Javassist 修改原版的代码。详细的说明见 [CtBehavior 的 Javadoc](http://www.javassist.org/html/javassist/CtBehavior.html) 和 [Javassist 的教程](https://www.javassist.org/tutorial/tutorial.html)。
 
-你可以使用 `@SpireRawPatch` 注解来定义一个 Instrument 类型的 Patch 方法，或是将方法名写成 Raw.
+你可以使用 `@SpireRawPatch` 注解来定义一个 Raw 类型的 Patch 方法，或是将方法名写成 Raw.
 
 Raw Patch 允许访问字节码水平的修改，例如通过传递 CodeConvertor 作为 instrument 的参数，在遍历到某个符合条件的字节码时对源代码进行修改。下面是允许格挡突破 999 层上限的简单示例，可通过修改源代码中判断格挡层数的代码达成。
 
@@ -357,3 +395,185 @@ Raw Patch 允许访问字节码水平的修改，例如通过传递 CodeConverto
 [![zZ2X0e.png](https://s1.ax1x.com/2022/11/16/zZ2X0e.png)](https://imgse.com/i/zZ2X0e)
 
 同样地，Raw 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
+
+
+
+## 6. 编译 Patch 后的代码
+
+ModTheSpire 在勾选 `debug` 启动时，会在游戏日志中显示每个 Patch 被应用的行数，尽管从技术上讲，这些信息已足以确认 Patch 应用在了正确的位置，但 `--out-jar` 能够让用户更方便直观地检查 Patch 的位置。
+
+`--out-jar` 标记并不像 `debug` 一样直接显示在 ModTheSpire 的界面中，要使用 `--out-jar` 功能，需要在命令行启动 ModTheSpire，如：
+
+```java
+java -jar ModTheSpire.jar --out-jar
+```
+
+通过 `--out-jar` 启动的 ModTheSpire 并不会启动游戏，而是将所勾选 Mods 的 Patch 编译到游戏源码中（也就是给游戏打 Patch），然后将编译好的代码（即打完 Patch 的游戏代码）转存到 `desktop-1.0-patched.jar` 文件中。然后你就可以使用 JD-GUI 或 Luyten 反编译 `desktop-1.0-patched.jar` 从而查看被 Patch 后的游戏代码。
+
+
+
+## FAQ
+1. 我怎么知道我的 Patch 有没有被应用、有没有打到我想要的位置上？
+
+   **答：** 请一字不拉地阅读 [编译 Patch 后的代码](#6-编译-patch-后的代码) 部分。
+
+2. 如何修改原版代码中的某个局部变量的值？
+
+   **答：** 请一字不拉地阅读 [Insert Patch](#insert) 部分，了解 `localvars` 的用法，以及 [@ByRef](#byref) 部分。
+
+3. 什么是静态嵌套类？什么是静态方法？什么是静态初始化块？
+
+   **答：**
+
+   Java 基础不牢固导致的问题。以下为一图流简单解释。想要深入理解静态 `static` 关键字的工作原理请善用免费的搜索引擎。
+
+   ```java
+   public class WhatAreStatics {
+       static String id;
+       static int index;
+       static Object obj;
+       // 静态初始化块
+       static {
+           id = "STATIC FIELD";
+           index = 10;
+           obj = new Object();
+       }
+       
+       String name;
+       // 非静态初始化块
+       {
+           name = "Not static one";
+       }
+       
+       // 静态方法
+       public static void StaticVmethod() {
+           ...
+       }
+       // 也是静态方法
+       public static boolean StaticBool(String args) {
+           ...
+       }
+        // 同样也是静态方法
+       public static Object NameDoesntMatter(Object o1, Object o2, int i1) {
+           ...
+       }
+       // 构造体不是静态方法！！！！！
+       // 构造体不是静态方法！！！！！
+       // 构造体不是静态方法！！！！！
+       public WhatAreStatics() {
+           ...
+       }
+       
+       // 静态嵌套类
+       public static class NestedClass {
+           ...
+       }
+   }
+   ```
+
+   
+
+4. 什么是原方法？什么是 Patch 方法？什么是 Patch 类？什么又是被 Patch 的类？什么又是 Patch 的类？
+
+   **答：**
+
+   甲往乙的脸上打了一拳。那么，
+
+   乙的脸，就是原方法；
+
+   甲打的那一拳，就是 Patch 方法；
+
+   甲本身，就是 Patch 类；
+
+   被打的乙本身，就是被 Patch 的类，也是很多语境下 Patch 的类。
+
+   在诸如“你 Patch 的类是哪个类？”、“你 Patch 的类呢？”和“你要 Patch 哪个类？”此类语句中，Patch 作动词，表示往哪个类（哪位乙）上打 Patch. 当然，在不同的语境（不同上下文）下，这类说法亦有可能指代你写 Patch 的那个类（甲）而不是被 Patch 的类。
+
+   
+
+5. 原方法里用到了 `this` 关键字，可是 Patch 方法里不接收 `this` 参数，我该怎么办呢？
+
+   **答：**
+
+   非常经典的由 Java 基础不牢固导致的问题。如果你真的被这个问题困扰了很久，建议重学一遍 Java 再来写 Patch.
+
+   Java 中的 `this` 关键字是指向类的对象本身，而这个对象本身，就是你在 Patch 方法中接收的实例，即Instance 参数。实际上，你在类中攥写的非静态方法也会隐式地接收一个指向该类实例化后的对象本身的参数，这个参数的表现形式就是 `this`. 因此你可以在这类方法中使用 `this` 关键字。不过非静态方法是隐式接收，即不需要你写在方法参数列表中，而 Patch 方法需要你显式地写在参数列表中。
+
+   简而言之，**大部分情况下**，Patch 方法中接收的实例参数可等价**视为**原方法中的 `this` 关键字。
+
+   
+
+6. 我要 Patch 原版的 MeteorStrike 类的构造体，写了如下的 Patch，可是不成功，为什么呢？我明明是按着教程一步步来的呀？
+
+   ```java
+   @SpirePatch(clz = MeteorStrike.class, method = "MeteorStrike")
+   public static class MeteorStrikePatch {
+       @SpirePostfixPatch
+       public static void Postfix(BootSequence _inst) {
+           ...
+       }
+   }
+   ```
+
+   **答：**
+
+   Java 基础不牢固，教程跳着看等多种因素导致的问题。
+
+   本教程在第二部分 [SpirePatch 的一般规则](#2-spirepatch-的一般规则) 中就已经很明确地说明了这些非常基础的问题。下为原文。
+
+   > Patch 方法接收所有**原方法（被 Patch 的方法）**的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收（被）Patch 的**原方法所属的类的实例**（Instance）参数。示例如下。
+   >
+   > ```java
+   > public static void [Patch方法名]([实例类型] __instance, [参数列表]...) {...}
+   > ```
+
+   > `method` 定义需要（被）Patch 的原方法 [名] ，接收 String 类型。
+   >
+   > * 使用 `SpirePatch.CONSTRUCTOR` 来定义构造体。
+   > * 使用 `SpirePatch.STATICINITIALIZER` 来定义静态初始化块。
+   > * 使用 `SpirePatch.CLASS` 来定义类。
+
+   一步步分析，首先最明显的问题就是提问的人要 Patch 构造体，但给 `method` 赋了个 `"MeteorStrike"`，典型的将 Java 类的构造体（构造方法）和其他方法混为一谈的错误。
+
+   其次，提问的人 Patch 的类是 `MeteorStrike` 但在Patch 方法里却接收了个 `BootSequence` 类型的实例参数，可能是典型的不动脑复制粘贴别人代码导致的错误。实际上，Patch 方法接收的实例参数类型除了是（被）Patch 的类，亦可以是该类的父类，即在本例中可为 `AbstractCard` 或 `Object`. 换句话说，实例的类型必须是可由（被）Patch 的类的类型转换而来的类型。
+
+   综上，修改后正确的代码为：
+
+   ```java
+   @SpirePatch(clz = MeteorStrike.class, method = SpirePatch.CONSTRUCTOR)
+   public static class MeteorStrikePatch {
+       @SpirePostfixPatch
+       public static void Postfix(MeteorStrike _inst) {
+           ...
+       }
+   }
+   ```
+
+   或是：
+
+   ```java
+   @SpirePatch(clz = MeteorStrike.class, method = SpirePatch.CONSTRUCTOR)
+   public static class MeteorStrikePatch {
+       @SpirePostfixPatch
+       public static void Postfix(AbstractCard _inst) {
+           ...
+       }
+   }
+   ```
+
+   
+
+7. 写个 Patch 需要了解的名词和概念怎么这么多？这么多东西这么复杂还容易混淆谁记得住？
+
+   **答：**
+
+   诚然，在劝不学靡然成风的现状下，学习一些和尖塔 Mod 有关的 Java 基础，以及使用小学语文阅读理解能力耐心地阅读教程已然难于初中数学。
+   
+   总之，此问题碍于作者水平有限，无法解答，建议咨询师爷。
+
+   不过作者还是建议各位读者不要受劝不学这类不良之风的影响，每天花费30分钟到1小时不等的时间，结合菜鸟教程等免费的在线 Java 教程，认真学一学 Java 的基础知识。简单的尖塔 Mod 所涉及的 Java 基础不多。实际上，Java 已经是最通俗易懂的面向对象编程语言了。
+
+   
+
+9. 暂无
+   
