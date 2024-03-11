@@ -2,62 +2,77 @@
 
 （本文作者：RS76）
 
-[TOC]
+- [杀戮尖塔 Mod 开发的 Patch 指南](#杀戮尖塔-mod-开发的-patch-指南)
+  - [1. 概述](#1-概述)
+  - [2. SpirePatch 的一般规则](#2-spirepatch-的一般规则)
+    - [@SpirePatch 参数](#spirepatch-参数)
+    - [Patch 的加载顺序](#patch-的加载顺序)
+  - [3. 一般的 Patch 技术](#3-一般的-patch-技术)
+    - [Prefix](#prefix)
+      - [可用特性](#可用特性)
+    - [Postfix](#postfix)
+      - [可用特性](#可用特性-1)
+    - [Insert](#insert)
+      - [@SpireInsertPatch 参数](#spireinsertpatch-参数)
+      - [可用特性](#可用特性-2)
+      - [Locator](#locator)
+    - [Replace](#replace)
+    - [SpireField](#spirefield)
+    - [SpireOverride](#spireoverride)
+  - [4. Patch 可用的特性](#4-patch-可用的特性)
+    - [@ByRef](#byref)
+    - [Private Field Captures](#private-field-captures)
+      - [参数的顺序](#参数的顺序)
+    - [SpireReturn](#spirereturn)
+  - [5. 进阶 Patch 技术](#5-进阶-patch-技术)
+    - [Instrument](#instrument)
+    - [Raw](#raw)
 
 ## 1. 概述
 
-本教程基于 ModTheSpire 的 Wiki 上所提供的 Patch 教程，<font color=red>攥写 Patch 需要有足够的 Java 和 Javassist 知识，对于其中涉及的大部分 Java 原理，本教程不提供任何的解释。</font>SpirePatch 允许 Mods 将自己的代码写入杀戮尖塔原本的代码中。当一个 Mod 被加载时，ModTheSpire 首先搜寻该 Mod 中所有带有 @SpirePatch 注解的类。也就是说，对于每个你想要插入代码的原版方法，你必须创建一个带有 @SpirePatch 注解的类。
+本教程基于 ModTheSpire 的 Wiki 上所提供的 Patch 教程，攥写 Patch 需要有足够的 Java 和 Javassist 知识，对于其中涉及的 Java 原理，本教程不提供任何的解释。SpirePatch 允许 Mods 将自己的代码写入杀戮尖塔原本的代码中。当一个 Mod 被加载时，ModTheSpire 首先搜寻该 Mod 中所有带有 @SpirePatch 注解的类。也就是说，对于每个你想要插入代码的原版方法，你必须创建一个带有 @SpirePatch 注解的类。
 
 ModTheSpire 还提供了一个较新的 Patch 类型，SpirePatch2。它对 Patch 方法参数的处理方式与最基本的 SpirePatch 有所区别。在阅读 SpirePatch2 的指南前，你需要对 SpirePatch 的工作原理有足够的理解。当然，SpirePatch2 的指南你得自己上 ModTheSpire 的 Wiki 看，因为它本身没啥难度。
 
 本教程会介绍下列类型的 Patch：
 
-* [Prefix](#Prefix)
-* [Postfix](#Postfix)
-* [Insert](#Insert)
+* [Prefix](#prefix)
+* [Postfix](#postfix)
+* [Insert](#insert)
 * [Replace](#Replace)
-* [SpireField](#SpireField)
-* [SpireOverride](#SpireOverride)
-* [SpireEnum](#SpireEnum)
-* [Instrument](#Instrument)
-* [Raw](#Raw)
-
-对于刚入门 Mod 制作且想要写 Patch 的新手，请<strong><font color=red>仔细并认真且耐心地一步步地从头到尾一字不拉地同时完完全全地在不跳行、不跳字的情况下</font></strong>阅读完本篇教程。
-
-对于刚写 Patch 时遇到难以解决的问题的新手，在阅读完教程的主要部分后，请先<strong><font color=red>仔细并认真且耐心地一步步地从头到尾一字不拉地同时完完全全地在不跳行、不跳字的情况下</font></strong>阅读 [FAQ](#FAQ) 部分。
-
-若 FAQ 部分无法解答你的疑惑，可以到 Mod 交流群**直接说出**你想要实现的具体效果并贴出你为了实现这个效果正在写的 Patch 代码进行提问。
+* [SpireField](#spirefield)
+* [SpireOverride](#spireoverride)
+* [Instrument](#instrument)
+* [Raw](#raw)
 
 ## 2. SpirePatch 的一般规则
 
 * Patch 类如果是**嵌套类**，那它必须是**静态嵌套类**。
 * Patch 方法必须是**静态方法**。
 * Patch 类需有 @SpirePatch 注解。
-* Patch 方法接收所有**原方法（被 Patch 的方法）**的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收（被）Patch 的**原方法所属的类的实例**（Instance）参数。示例如下。
+* Patch 方法接收所有原方法的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收实例（Instance）参数。示例如下。
 
 ```java
 public static void [Patch方法名]([实例类型] __instance, [参数列表]...) {...}
 ```
 
-* Patch 方法**按顺序**接收参数，实例在前，然后是**原方法的参数顺序**。一般地，实例和参数名不影响接收的顺序。
-* Patch 方法接收参数的逻辑与一般的 Java 方法没有区别，即**按值接收**，而不是按引用接收。
-  * Java 方法接收的参数是原值 A 的一个复制 A1，A 和 A1 指向同个引用。因此修改 A1.value 也会同时修改 A.value，但给 A1 赋新值并不影响 A 本身。
-
+* Patch 方法按顺序接收参数，实例在前，然后是原方法的参数顺序。一般地，实例和参数名不影响接收的顺序。
+* Patch 方法接收参数的逻辑与一般的 Java 没有区别，即按值接收，而不是按引用接收。
 
 ### @SpirePatch 参数
 
-* `clz` 定义包含需要（被）Patch 的原方法的类，接收 Class<?> 类型。
-* `cls` 定义包含需要（被）Patch 的原方法的类，接收 String 类型。必须是完整的类路径和类名。
-* `method` 定义需要（被）Patch 的原方法 [名] ，接收 String 类型。
+* `clz` 定义包含需要 Patch 的原方法的类，接收 Class<?> 类型。
+* `cls` 定义包含需要 Patch 的原方法的类，接收 String 类型。必须是完整的类路径和类名。
+* `method` 定义需要 Patch 的原方法 [名] ，接收 String 类型。
   * 使用 `SpirePatch.CONSTRUCTOR` 来定义构造体。
   * 使用 `SpirePatch.STATICINITIALIZER` 来定义静态初始化块。
   * 使用 `SpirePatch.CLASS` 来定义类。
-* `paramtypez` 定义需要（被）Patch 的原方法的参数类型，接收 Class<?> 类型的数组（当原方法有多个重载，即同名方法，时需要填写该参数，无参方法的写法为 `paramtypez = {}` ）
-* `paramtypes` 定义需要（被）Patch 的原方法的参数类型，接收 String 类型的数组。必须填写参数类型完整的类路径和类名。
+* `paramtypez` 定义需要 Patch 的原方法的参数类型，接收 Class<?> 类型的数组（当原方法有多个重载，即同名方法，时需要填写该参数，无参方法的写法为 `paramtypez = {}` ）
+* `paramtypes` 定义需要 Patch 的原方法的参数类型，接收 String 类型的数组。必须填写参数类型完整的类路径和类名。
 * `requiredModId` 定义该 Patch 方法加载时所需加载的 Mod 的 ID，接收 String 类型。
   * 用于跨 Mod 直接进行 Patch.
   * 当 Mod ID 所指明的 Mod 加载了但 Patch 失败时会产生错误。
-* `optional` 当设为 true 时，如果需要（被）Patch 的类和方法不存在时（例如跨 Mod 但另一个 Mod 未加载），该 Patch 会被忽略。
+* `optional` 当设为 true 时，如果需要 Patch 的类和方法不存在时（例如跨 Mod 但另一个 Mod 未加载），该 Patch 会被忽略。
   * 当 Patch 失败时不会产生错误。
 
 下面是对 AbstractPlayer 类中 useCard 方法 Patch 的示例。
@@ -66,10 +81,7 @@ public static void [Patch方法名]([实例类型] __instance, [参数列表]...
 @SpirePatch(clz = AbstractPlayer.class, method = "useCard", 
             paramtypez = {AbstractCard.class, AbstractMonster.class, int.class})
 public class ExamplePatch {
-    @SpirePrefixPatch
-    public static void Prefix(AbstractPlayer __instance, AbstractCard c, AbstractMonster m, int e) {
-        ...
-    }
+    ...
 }
 ```
 
@@ -93,21 +105,21 @@ Prefix 会在原方法的最开始插入你的 Patch 方法。
 
 你可以使用 `@SpirePrefixPatch` 注解来定义一个 Prefix 类型的 Patch 方法。
 
-<strong><font color = red>注意，ModTheSpire 优先按照 Patch 方法名判断该 Patch 的类型，因此一个方法名为 Postfix 但带有 `@SpirePrefixPatch` 注解的 Patch 方法会被视为 Postifx 而不是 Prefix.</font></strong>  部分其他类型的 Patch 同样适用该规则，下不提醒。
+<font color = red>注意，ModTheSpire 优先按照 Patch 方法名判断该 Patch 的类型，因此一个方法名为 Postfix 但带有 `@SpirePrefixPatch` 注解的 Patch 方法会被视为 Postifx 而不是 Prefix.</font>  部分其他类型的 Patch 同样适用该规则，下不提醒。
 
 下面是对 AbstractPlayer 中的 draw 方法插入 Prefix Patch 的实例，以及插入前和插入后反编译出的源码效果。注意 draw 方法有 2 个重载，因此需要填写 paramtypez 参数。往后 Patch 实例不再详细解释。
 
-![prefix_example_01](images/examplpatch_prefix_01.PNG)
+[![zZ2of1.md.png](https://s1.ax1x.com/2022/11/16/zZ2of1.md.png)](https://imgse.com/i/zZ2of1)
 
-![prefix_example_02](images/examplpatch_prefix_02.PNG)
+[![zZ27Sx.png](https://s1.ax1x.com/2022/11/16/zZ27Sx.png)](https://imgse.com/i/zZ27Sx)
 
-![prefix_example_03](images/examplpatch_prefix_03.PNG)
+[![zZ2Hl6.png](https://s1.ax1x.com/2022/11/16/zZ2Hl6.png)](https://imgse.com/i/zZ2Hl6)
 
 #### 可用特性
 
-* [@ByRef](#@ByRef)
-* [Private Field Captures](#Private Field Captures)
-* [SpireReturn](#SpireReturn)
+* [@ByRef](#byref)
+* [Private Field Captures](#private-field-captures)
+* [SpireReturn](#spirereturn)
 
 ### Postfix
 
@@ -115,24 +127,24 @@ Prefix 会在原方法的最开始插入你的 Patch 方法。
 
 Posfix 会在原方法的最后插入你的 Patch 方法。如果原方法有返回值的话，那么 Postfix 总会在 return 之前插入，这意味这你可以通过 Posfix 更改原方法的返回值，即 retVal = postfix( foobar(params) ).
 
-若要修改原方法的返回值，可在 Patch 方法的参数列表中添加一个类型为原方法返回值类型的参数，<font color=red>该参数必须是 Patch 方法的第一个参数。</font>
+若要修改原方法的返回值，可在 Patch 方法的参数列表中添加一个类型为原方法返回值类型的参数，该参数必须是 Patch 方法的第一个参数。
 
 你可以使用 `@SpirePostfixPatch` 注解来定义一个 Postfix 类型的 Patch 方法，或是将方法名写成 Postfix.
 
-![posfix_example_01](images/examplpatch_posfix_01.PNG)
+[![zZ2hTJ.md.png](https://s1.ax1x.com/2022/11/16/zZ2hTJ.md.png)](https://imgse.com/i/zZ2hTJ)
 
-![posfix_example_02](images/examplpatch_posfix_02.PNG)
+[![zZ2IYR.md.png](https://s1.ax1x.com/2022/11/16/zZ2IYR.md.png)](https://imgse.com/i/zZ2IYR)
 
 #### 可用特性
 
-* [@ByRef](#@ByRef)
-* [Private Field Captures](#Private Field Captures)
+* [@ByRef](#byref)
+* [Private Field Captures](#private-field-captures)
 
 ### Insert
 
 ------
 
-Insert 允许你在原方法中间的任意位置插入你的 Patch 方法。Insert 总是在你给出的位置<strong><font color=red>之前</font></strong>插入 Patch 方法。
+Insert 允许你在原方法中间的任意位置插入你的 Patch 方法。Insert 总是在你给出的位置**之前**插入 Patch 方法。
 
 **必须**使用 `@SpireInsertPatch` 注解来定义一个 Insert 类型的 Patch 方法。ModTheSpire 不会依据方法名判断该方法是否为 Insert 类型的 Patch 方法。
 
@@ -169,15 +181,15 @@ Insert 允许你在原方法中间的任意位置插入你的 Patch 方法。Ins
 * `rlocs` 定义多个插入位置的相对行数的数组。
 * `localvars` 用于捕获任何局部变量并传递给 Patch 方法。捕获的变量以参数的形式传递给 Patch 方法，变量的参数在原方法参数之后。捕获的变量**必须在 Patch 方法插入的位置之前已经声明**。
 
-![insert_example_01](images/examplpatch_insert_01.PNG)
+[![zZ2sWq.png](https://s1.ax1x.com/2022/11/16/zZ2sWq.png)](https://imgse.com/i/zZ2sWq)
 
-![insert_example_02](images/examplpatch_insert_02.PNG)
+[![zZ2gyT.md.png](https://s1.ax1x.com/2022/11/16/zZ2gyT.md.png)](https://imgse.com/i/zZ2gyT)
 
 #### 可用特性
 
-* [@ByRef](#@ByRef)
-* [Private Field Captures](#Private Field Captures)
-* [SpireReturn](#SpireReturn)
+* [@ByRef](#byref)
+* [Private Field Captures](#private-field-captures)
+* [SpireReturn](#spirereturn)
 
 #### Locator
 
@@ -189,11 +201,11 @@ ModTheSpire 提供了一个有助于在 Locator 中快速定位行数的 API，`
 
 下面是对 AbstractCard 类中的 calculateCardDamage 方法插入使用了 Locator 的 Insert Patch 的示例。其中 Locator 用于定位从原方法的参数 `mo` 中第二次调用的域 `powers` 的所在的位置。
 
-![insert_example_03](images/examplpatch_insert_03.PNG)
+[![zZ26S0.png](https://s1.ax1x.com/2022/11/16/zZ26S0.png)](https://imgse.com/i/zZ26S0)
 
-![insert_example_04](images/examplepatch_insert_04.PNG)
+[![zZ22OU.png](https://s1.ax1x.com/2022/11/16/zZ22OU.png)](https://imgse.com/i/zZ22OU)
 
-![insert_example_05](images/examplpatch_insert_05.PNG)
+[![zZ2Hl6.png](https://s1.ax1x.com/2022/11/16/zZ2Hl6.png)](https://imgse.com/i/zZ2Hl6)
 
 除了在 Insert Patch 中使用，Locator 以及 LineFinder 还可以在类似 Instrument 和 Raw 这类允许你直接使用 Javassist 的 Patch 中使用，即 Locator 和 LineFinder 并非 Insert 的限定工具。
 
@@ -205,11 +217,11 @@ ModTheSpire 提供了一个有助于在 Locator 中快速定位行数的 API，`
 
 Replace 会用 Patch 方法将原方法**完全替换**掉。在程序运行过程中，原方法体中的代码**全都不会**被调用，而是调用 Patch 方法，即 foobar(params) 会变成 replace(params). 下面的 Replace Patch 会完全替换掉 CardLibrary 类中 `getCardList` 方法的原代码。
 
-![replace_example_01](images/examplpatch_replace_01.PNG)
+[![zZ2qOO.png](https://s1.ax1x.com/2022/11/16/zZ2qOO.png)](https://imgse.com/i/zZ2qOO)
 
 注意，按照 ModTheSpire 加载 Patch 的顺序，Replace 会覆盖掉对同一个方法生效的所有 Insert 和 Instrument 类型的 Patch.
 
-<font color = red>警告：不要使用 Replace 类型的 Patch，除非是万不得已的情况。Replace 的破坏性会导致原方法的其他 Patch 失效或产生其他意料之外的效果。</font>
+警告：不要使用 Replace 类型的 Patch，除非是万不得已的情况。Replace 的破坏性会导致原方法的其他 Patch 失效或产生其他意料之外的效果。
 
 ### SpireField
 
@@ -221,13 +233,13 @@ SpireField 也是一种 Patch，因此需要将其写在一个 Patch 类内，�
 
 下例在 AbstractCard 类中新添加了一个类型为 String，名称中包含 example 的域。
 
-![spirefield_example_01](images/examplpatch_spirefield_01.PNG)
+[![zZ2OmD.png](https://s1.ax1x.com/2022/11/16/zZ2OmD.png)](https://imgse.com/i/zZ2OmD)
 
 注意，新添加的域的名称在编译后的代码中并不完全和你在代码中写的名称一样。因为， 为了防止出现多个域同名的情况，ModTheSpire 会使用索引变更你提供的名称，因此不应该使用反射按照域的名称获取你添加的域。
 
 可通过下面的方式访问和修改你添加的域：
 
-![spirefield_example_02](images/examplpatch_spirefield_02.PNG)
+[![zZ2jTH.png](https://s1.ax1x.com/2022/11/16/zZ2jTH.png)](https://imgse.com/i/zZ2jTH)
 
 在添加基本数据类型的域时，需要使用其对应的包装类。
 
@@ -256,31 +268,6 @@ class B extends A {
 
 要在这类重写方法中调用父类的实现，使用 `SpireSuper.call(params)` 而不是 `super.method(params)`.
 
-### SpireEnum
-
-------
-
-SpireEnum 是一种为尖塔源码中已有的枚举类添加新枚举值的手段，通过为一个静态域打上 `@SpireEnum` 注解来将该域变为原有枚举类的枚举值，同时，**该静态域的类型必须是目标枚举类型**。例如，为原版的枚举类 `AbstractPlayer.PlayerClass` 添加一个名为 `My_New_Player_Class` 的枚举，演示代码如下：
-
-```java
-public class MyEnums {
-    @SpireEnum(name = "My_New_Player_Class")
-    public static AbstractPlayer.PlayerClass MY_PLAYER;
-}
-```
-
-上面的例子中，若 SpireEnum 的参数 `name` 留空（即不写），那么被新加进去的枚举名即为变量名，即 `MY_PLAYER` 而不是 `My_New_Player_Class`.
-
-要在你的代码中调用由 SpireEnum 新加的枚举，按照调用静态域的方法来调用即可：
-
-```java
-public void foobar(AbstractPlayer.PlayerClass playerClass) {
-    if (playerClass == MyEnums.MY_PLAYER) {
-        ...
-    }
-}
-```
-
 
 
 ## 4. Patch 可用的特性
@@ -292,11 +279,11 @@ ByRef 允许 Patch 方法按引用接收参数的方法，当然，不是真的�
 * ByRef 适用于 Prefix、Postfix 和 Insert 类型的 Patch
 * 参数前使用 `@ByRef` 注解以标明该参数为 ByRef 参数
 
-![byref_example_01](images/examplpatch_byref_01.PNG)
+[![zZ2clV.png](https://s1.ax1x.com/2022/11/16/zZ2clV.png)](https://imgse.com/i/zZ2clV)
 
 ### Private Field Captures
 
-Private Field Captures（PFC） 是 ModTheSpire 提供的一个特性，允许 Patch 将原方法所在类的**私有域（私有变量）**作为参数接收。
+Private Field Captures（PFC） 是 ModTheSpire 提供的一个特性，允许 Patch 将原方法所在类的私有域作为参数接收。
 
 要接收某个私有域，需在 Patch 方法的参数列表中写入，与该私有域的变量名**同名同类型**的参数，并且该参数前需带有三个下划线，即 `fieldName` 写成 `___fieldName`.
 
@@ -313,7 +300,7 @@ Insert 类型的 Patch 方法中，PFC 的参数必须在任何接收局部变�
 3. 接收私有域的参数
 4. 接收局部变量的参数
 
-![pfc_example_01](images/examplpatch_pfc_01.PNG)
+[![zZ2fw4.png](https://s1.ax1x.com/2022/11/16/zZ2fw4.png)](https://imgse.com/i/zZ2fw4)
 
 ### SpireReturn
 
@@ -321,7 +308,7 @@ SpireReutn 允许 Patch 方法在原方法中提前调用 `return` 语句。
 
 * SpireReturn 适用于 Prefix 和 Insert 类型的 Patch .（用脑子想想为什么不适用于 Postfix）
 
-![spirereturn_example_01](images/examplpatch_spirereturn_01.PNG)
+[![zZ2xkd.png](https://s1.ax1x.com/2022/11/16/zZ2xkd.png)](https://imgse.com/i/zZ2xkd)
 
 对于原方法返回值类型为基本数据类型的方法，需使用其对应的包装类定义 SpireReturn，例如：
 
@@ -333,7 +320,7 @@ public static SpireReturn<Boolean> Insert() {...}
 
 ## 5. 进阶 Patch 技术
 
-前文介绍的 Prefix、Postfix、Insert 和 Replace 类型的 Patch，只需读者有一定的 Java 基础就能勉强使用。<strong><font color=red>下面介绍的 Instrument 和 Raw 类型的 Patch 需要读者有一定的 Javassist 基础才能使用。同样地，本教程不过多对 Javassist 的内容进行教学。</font></strong>
+前文介绍的 Prefix、Postfix、Insert 和 Replace 类型的 Patch，只需读者有一定的 Java 基础就能勉强使用。下面介绍的 Instrument 和 Raw 类型的 Patch 需要读者有一定的 Javassist 基础才能使用。同样地，本教程不过多对 Javassist 的内容进行教学。
 
 
 
@@ -349,7 +336,7 @@ ModTheSpire 提供的 Instrument 是简化过的，只允许返回 ExprEditor. P
 
 下面是对 UseCardAction 中的一个构造体进行修改的简单的 Instrument Patch. 当调用的方法名为`onUse` 或 `triggerOnCardPlayed` 和接收的参数符合一定的条件时，原调用方法才可被调用。
 
-![instrument_01](images/examplpatch_instrument_01.PNG)
+[![zZ25k9.png](https://s1.ax1x.com/2022/11/16/zZ25k9.png)](https://imgse.com/i/zZ25k9)
 
 Instrument 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
 
@@ -359,214 +346,14 @@ Instrument 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
 
 Raw 放宽了条件，允许你更自由地使用 Javassist 提供的 API 进行低水平的修改，例如修改字节码。ModTheSpire 会将原方法的 CtBehavior 作为参数传递给 Raw 类型的 Patch 方法，然后你就可以自由地使用 Javassist 修改原版的代码。详细的说明见 [CtBehavior 的 Javadoc](http://www.javassist.org/html/javassist/CtBehavior.html) 和 [Javassist 的教程](https://www.javassist.org/tutorial/tutorial.html)。
 
-你可以使用 `@SpireRawPatch` 注解来定义一个 Raw 类型的 Patch 方法，或是将方法名写成 Raw.
+你可以使用 `@SpireRawPatch` 注解来定义一个 Instrument 类型的 Patch 方法，或是将方法名写成 Raw.
 
 Raw Patch 允许访问字节码水平的修改，例如通过传递 CodeConvertor 作为 instrument 的参数，在遍历到某个符合条件的字节码时对源代码进行修改。下面是允许格挡突破 999 层上限的简单示例，可通过修改源代码中判断格挡层数的代码达成。
 
-![raw_example_01](images/examplpatch_raw_01.PNG)
+[![zZ2b6K.png](https://s1.ax1x.com/2022/11/16/zZ2b6K.png)](https://imgse.com/i/zZ2b6K)
 
 又或者为其他类添加新的方法，打上新的注解等。
 
-![raw_example_02](images/examplpatch_raw_02.PNG)
+[![zZ2X0e.png](https://s1.ax1x.com/2022/11/16/zZ2X0e.png)](https://imgse.com/i/zZ2X0e)
 
 同样地，Raw 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
-
-
-
-## 6. 编译 Patch 后的代码
-
-ModTheSpire 在勾选 `debug` 启动时，会在游戏日志中显示每个 Patch 被应用的行数，尽管从技术上讲，这些信息已足以确认 Patch 应用在了正确的位置，但 `--out-jar` 能够让用户更方便直观地检查 Patch 的位置。
-
-`--out-jar` 标记并不像 `debug` 一样直接显示在 ModTheSpire 的界面中，要使用 `--out-jar` 功能，需要在命令行启动 ModTheSpire，如：
-
-```java
-java -jar ModTheSpire.jar --out-jar
-```
-
-通过 `--out-jar` 启动的 ModTheSpire 并不会启动游戏，而是将所勾选 Mods 的 Patch 编译到游戏源码中（也就是给游戏打 Patch），然后将编译好的代码（即打完 Patch 的游戏代码）转存到 `desktop-1.0-patched.jar` 文件中。然后你就可以使用 JD-GUI 或 Luyten 反编译 `desktop-1.0-patched.jar` 从而查看被 Patch 后的游戏代码。
-
-
-
-## FAQ
-
-1. 我怎么知道我的 Patch 有没有被应用、有没有打到我想要的位置上？
-
-   请一字不拉地阅读 [编译 Patch 后的代码](#6. 编译 Patch 后的代码) 部分。
-
-2. 如何修改原版代码中的某个局部变量的值？
-
-   请一字不拉地阅读 [Insert Patch](#Insert) 部分，了解 `localvars` 的用法，以及 [@ByRef](#@ByRef) 部分。
-
-3. 什么是静态嵌套类？什么是静态方法？什么是静态初始化块？
-
-   **答：**
-
-   Java 基础不牢固导致的问题。以下为一图流简单解释。想要深入理解静态 `static` 关键字的工作原理请善用免费的搜索引擎。
-
-   ```java
-   public class WhatAreStatics {
-       static String id;
-       static int index;
-       static Object obj;
-       // 静态初始化块
-       static {
-           id = "STATIC FIELD";
-           index = 10;
-           obj = new Object();
-       }
-       
-       String name;
-       // 非静态初始化块
-       {
-           name = "Not static one";
-       }
-       
-       // 静态方法
-       public static void StaticVmethod() {
-           ...
-       }
-       // 也是静态方法
-       public static boolean StaticBool(String args) {
-           ...
-       }
-        // 同样也是静态方法
-       public static Object NameDoesntMatter(Object o1, Object o2, int i1) {
-           ...
-       }
-       // 构造体不是静态方法！！！！！
-       // 构造体不是静态方法！！！！！
-       // 构造体不是静态方法！！！！！
-       public WhatAreStatics() {
-           ...
-       }
-       
-       // 静态嵌套类
-       public static class NestedClass {
-           ...
-       }
-   }
-   ```
-
-   
-
-4. 什么是原方法？什么是 Patch 方法？什么是 Patch 类？什么又是被 Patch 的类？什么又是 Patch 的类？
-
-   **答：**
-
-   甲往乙的脸上打了一拳。那么，
-
-   乙的脸，就是原方法；
-
-   甲打的那一拳，就是 Patch 方法；
-
-   甲本身，就是 Patch 类；
-
-   被打的乙本身，就是被 Patch 的类，也是很多语境下 Patch 的类。
-
-   在诸如“你 Patch 的类是哪个类？”、“你 Patch 的类呢？”和“你要 Patch 哪个类？”此类语句中，Patch 作动词，表示往哪个类（哪位乙）上打 Patch. 当然，在不同的语境（不同上下文）下，这类说法亦有可能指代你写 Patch 的那个类（甲）而不是被 Patch 的类。
-
-   
-
-5. 原方法里用到了 `this` 关键字，可是 Patch 方法里不接收 `this` 参数，我该怎么办呢？
-
-   **答：**
-
-   非常经典的由 Java 基础不牢固导致的问题。如果你真的被这个问题困扰了很久，建议重学一遍 Java 再来写 Patch.
-
-   Java 中的 `this` 关键字是指向类的对象本身，而这个对象本身，就是你在 Patch 方法中接收的实例，即Instance 参数。实际上，你在类中攥写的非静态方法也会隐式地接收一个指向该类实例化后的对象本身的参数，这个参数的表现形式就是 `this`. 因此你可以在这类方法中使用 `this` 关键字。不过非静态方法是隐式接收，即不需要你写在方法参数列表中，而 Patch 方法需要你显式地写在参数列表中。
-
-   简而言之，**大部分情况下**，Patch 方法中接收的实例参数可等价**视为**原方法中的 `this` 关键字。
-
-   
-
-6. 我要 Patch 原版的 MeteorStrike 类的构造体，写了如下的 Patch，可是不成功，为什么呢？我明明是按着教程一步步来的呀？
-
-   ```java
-   @SpirePatch(clz = MeteorStrike.class, method = "MeteorStrike")
-   public static class MeteorStrikePatch {
-       @SpirePostfixPatch
-       public static void Postfix(BootSequence _inst) {
-           ...
-       }
-   }
-   ```
-
-   **答：**
-
-   Java 基础不牢固，教程跳着看等多种因素导致的问题。
-
-   本教程在第二部分 [SpirePatch 的一般规则](#2. SpirePatch 的一般规则) 中就已经很明确地说明了这些非常基础的问题。下为原文。
-
-   > Patch 方法接收所有**原方法（被 Patch 的方法）**的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收（被）Patch 的**原方法所属的类的实例**（Instance）参数。示例如下。
-   >
-   > ```java
-   > public static void [Patch方法名]([实例类型] __instance, [参数列表]...) {...}
-   > ```
-
-   > `method` 定义需要（被）Patch 的原方法 [名] ，接收 String 类型。
-   >
-   > * 使用 `SpirePatch.CONSTRUCTOR` 来定义构造体。
-   > * 使用 `SpirePatch.STATICINITIALIZER` 来定义静态初始化块。
-   > * 使用 `SpirePatch.CLASS` 来定义类。
-
-   一步步分析，首先最明显的问题就是提问的人要 Patch 构造体，但给 `method` 赋了个 `"MeteorStrike"`，典型的将 Java 类的构造体（构造方法）和其他方法混为一谈的错误。
-
-   其次，提问的人 Patch 的类是 `MeteorStrike` 但在Patch 方法里却接收了个 `BootSequence` 类型的实例参数，可能是典型的不动脑复制粘贴别人代码导致的错误。实际上，Patch 方法接收的实例参数类型除了是（被）Patch 的类，亦可以是该类的父类，即在本例中可为 `AbstractCard` 或 `Object`. 换句话说，实例的类型必须是可由（被）Patch 的类的类型转换而来的类型。
-
-   综上，修改后正确的代码为：
-
-   ```java
-   @SpirePatch(clz = MeteorStrike.class, method = SpirePatch.CONSTRUCTOR)
-   public static class MeteorStrikePatch {
-       @SpirePostfixPatch
-       public static void Postfix(MeteorStrike _inst) {
-           ...
-       }
-   }
-   ```
-
-   或是：
-
-   ```java
-   @SpirePatch(clz = MeteorStrike.class, method = SpirePatch.CONSTRUCTOR)
-   public static class MeteorStrikePatch {
-       @SpirePostfixPatch
-       public static void Postfix(AbstractCard _inst) {
-           ...
-       }
-   }
-   ```
-
-   
-
-7. 写个 Patch 需要了解的名词和概念怎么这么多？这么多东西这么复杂还容易混淆谁记得住？
-
-   **答：**
-
-   诚然，在劝不学靡然成风的现状下，学习一些和尖塔 Mod 有关的 Java 基础，以及耐心地阅读教程对于大部分人来说可能是件难事。不过庆幸的是，对于新 Modder 而言，下列基本不等式或许能在你日夜排除 Patch 错误的路上提供微不足道的帮助。
-
-   静态方法 ≠ 静态初始化块	静态嵌套类 ≠ 内部类	构造体 ≠ 静态方法 	构造体 ≠ 返回值为类本身
-
-   Patch 构造体 ≠ Patch 方法不接收实例	有 Replace ≠ 要用 Replace（我有核弹 ≠ 我要发射核弹）
-
-   局部变量 ≠ 私有域（私有变量）	私有域 ≠ 静态域（静态变量）	方法参数 ≠ 局部变量 ≠ 私有域
-
-   可以用包装类 ≠ 可以用基本数据类型	教程案例里没写 ≠ 实际中不能写
-
-   SpirePatch 按顺序接收参数 ≠ SpirePatch 按参数名接收参数
-
-   PFC 按参数名接收参数 ≠ 其他参数也按参数名接收参数 	有可用特性 ≠ 要用上所有特性
-
-   实例参数可**视为** `this` 关键字 ≠ 实例参数就是 `this`	SpireReturn 接受的类型 ≠ （被）Patch 的类
-
-   Patch 非静态方法 ≠ Patch 方法可以是非静态的	Patch 了父类原方法 ≠ 子类重写的方法一定也受影响
-
-   抽象方法没有方法体需要子类重写 ≠ Patch 父类抽象方法会直接 Patch 每个子类重写的方法
-
-   你只找到（被）Patch 的原方法的一个实现 ≠ 原方法没有其他重载
-
-   某个方法可以这样 Patch 修改 ≠ 其他所有方法也可以这样 Patch 修改
-
-   
-
-8. 暂无
