@@ -519,7 +519,7 @@ java -jar ModTheSpire.jar --out-jar
 
    Java 基础不牢固，教程跳着看等多种因素导致的问题。
 
-   本教程在第二部分 [SpirePatch 的一般规则](#2. SpirePatch 的一般规则) 中就已经很明确地说明了这些非常基础的问题。下为原文。
+   本教程在第二部分 [SpirePatch 的一般规则](#2-spirepatch-的一般规则) 中就已经很明确地说明了这些非常基础的问题。下为原文。
 
    > Patch 方法接收所有**原方法（被 Patch 的方法）**的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收（被）Patch 的**原方法所属的类的实例**（Instance）参数。示例如下。
    >
