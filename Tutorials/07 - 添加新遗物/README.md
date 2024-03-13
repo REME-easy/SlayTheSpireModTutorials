@@ -28,7 +28,7 @@ MyRelic.java:
 ```java
 // 继承CustomRelic
 public class MyRelic extends CustomRelic {
-    // 遗物ID
+    // 遗物ID（此处的ModHelper在“04 - 本地化”中提到）
     public static final String ID = ModHelper.makePath("MyRelic");
     // 图片路径
     private static final String IMG_PATH = "ExampleModResources/img/relics/MyRelic.png";
