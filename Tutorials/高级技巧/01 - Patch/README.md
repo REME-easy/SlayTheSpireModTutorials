@@ -123,11 +123,11 @@ Prefix 会在原方法的最开始插入你的 Patch 方法。
 
 下面是对 AbstractPlayer 中的 draw 方法插入 Prefix Patch 的实例，以及插入前和插入后反编译出的源码效果。注意 draw 方法有 2 个重载，因此需要填写 paramtypez 参数。往后 Patch 实例不再详细解释。
 
-[![zZ2of1.md.png](https://s1.ax1x.com/2022/11/16/zZ2of1.md.png)](https://imgse.com/i/zZ2of1)
+![examplpatch_prefix_01.PNG](images/examplpatch_prefix_01.PNG)
 
-[![zZ27Sx.png](https://s1.ax1x.com/2022/11/16/zZ27Sx.png)](https://imgse.com/i/zZ27Sx)
+![examplpatch_prefix_02.PNG](images/examplpatch_prefix_02.PNG)
 
-[![zZ2Hl6.png](https://s1.ax1x.com/2022/11/16/zZ2Hl6.png)](https://imgse.com/i/zZ2Hl6)
+![examplpatch_prefix_03.PNG](images/examplpatch_prefix_03.PNG)
 
 #### 可用特性
 
@@ -145,9 +145,9 @@ Posfix 会在原方法的最后插入你的 Patch 方法。如果原方法有返
 
 你可以使用 `@SpirePostfixPatch` 注解来定义一个 Postfix 类型的 Patch 方法，或是将方法名写成 Postfix.
 
-[![zZ2hTJ.md.png](https://s1.ax1x.com/2022/11/16/zZ2hTJ.md.png)](https://imgse.com/i/zZ2hTJ)
+![posfix_example_01](images/examplpatch_posfix_01.PNG)
 
-[![zZ2IYR.md.png](https://s1.ax1x.com/2022/11/16/zZ2IYR.md.png)](https://imgse.com/i/zZ2IYR)
+![posfix_example_02](images/examplpatch_posfix_02.PNG)
 
 #### 可用特性
 
@@ -195,9 +195,9 @@ Insert 允许你在原方法中间的任意位置插入你的 Patch 方法。Ins
 * `rlocs` 定义多个插入位置的相对行数的数组。
 * `localvars` 用于捕获任何局部变量并传递给 Patch 方法。捕获的变量以参数的形式传递给 Patch 方法，变量的参数在原方法参数之后。捕获的变量**必须在 Patch 方法插入的位置之前已经声明**。
 
-[![zZ2sWq.png](https://s1.ax1x.com/2022/11/16/zZ2sWq.png)](https://imgse.com/i/zZ2sWq)
+![insert_example_01](images/examplpatch_insert_01.PNG)
 
-[![zZ2gyT.md.png](https://s1.ax1x.com/2022/11/16/zZ2gyT.md.png)](https://imgse.com/i/zZ2gyT)
+![insert_example_02](images/examplpatch_insert_02.PNG)
 
 #### 可用特性
 
@@ -215,11 +215,11 @@ ModTheSpire 提供了一个有助于在 Locator 中快速定位行数的 API，`
 
 下面是对 AbstractCard 类中的 calculateCardDamage 方法插入使用了 Locator 的 Insert Patch 的示例。其中 Locator 用于定位从原方法的参数 `mo` 中第二次调用的域 `powers` 的所在的位置。
 
-[![zZ26S0.png](https://s1.ax1x.com/2022/11/16/zZ26S0.png)](https://imgse.com/i/zZ26S0)
+![insert_example_03](images/examplpatch_insert_03.PNG)
 
-[![zZ22OU.png](https://s1.ax1x.com/2022/11/16/zZ22OU.png)](https://imgse.com/i/zZ22OU)
+![insert_example_04](images/examplepatch_insert_04.PNG)
 
-[![zZ2Hl6.png](https://s1.ax1x.com/2022/11/16/zZ2Hl6.png)](https://imgse.com/i/zZ2Hl6)
+![insert_example_05](images/examplpatch_insert_05.PNG)
 
 除了在 Insert Patch 中使用，Locator 以及 LineFinder 还可以在类似 Instrument 和 Raw 这类允许你直接使用 Javassist 的 Patch 中使用，即 Locator 和 LineFinder 并非 Insert 的限定工具。
 
@@ -231,7 +231,7 @@ ModTheSpire 提供了一个有助于在 Locator 中快速定位行数的 API，`
 
 Replace 会用 Patch 方法将原方法**完全替换**掉。在程序运行过程中，原方法体中的代码**全都不会**被调用，而是调用 Patch 方法，即 foobar(params) 会变成 replace(params). 下面的 Replace Patch 会完全替换掉 CardLibrary 类中 `getCardList` 方法的原代码。
 
-[![zZ2qOO.png](https://s1.ax1x.com/2022/11/16/zZ2qOO.png)](https://imgse.com/i/zZ2qOO)
+![replace_example_01](images/examplpatch_replace_01.PNG)
 
 注意，按照 ModTheSpire 加载 Patch 的顺序，Replace 会覆盖掉对同一个方法生效的所有 Insert 和 Instrument 类型的 Patch.
 
@@ -247,13 +247,13 @@ SpireField 也是一种 Patch，因此需要将其写在一个 Patch 类内，�
 
 下例在 AbstractCard 类中新添加了一个类型为 String，名称中包含 example 的域。
 
-[![zZ2OmD.png](https://s1.ax1x.com/2022/11/16/zZ2OmD.png)](https://imgse.com/i/zZ2OmD)
+![spirefield_example_01](images/examplpatch_spirefield_01.PNG)
 
 注意，新添加的域的名称在编译后的代码中并不完全和你在代码中写的名称一样。因为， 为了防止出现多个域同名的情况，ModTheSpire 会使用索引变更你提供的名称，因此不应该使用反射按照域的名称获取你添加的域。
 
 可通过下面的方式访问和修改你添加的域：
 
-[![zZ2jTH.png](https://s1.ax1x.com/2022/11/16/zZ2jTH.png)](https://imgse.com/i/zZ2jTH)
+![spirefield_example_02](images/examplpatch_spirefield_02.PNG)
 
 在添加基本数据类型的域时，需要使用其对应的包装类。
 
@@ -317,7 +317,7 @@ ByRef 允许 Patch 方法按引用接收参数的方法，当然，不是真的�
 * ByRef 适用于 Prefix、Postfix 和 Insert 类型的 Patch
 * 参数前使用 `@ByRef` 注解以标明该参数为 ByRef 参数
 
-[![zZ2clV.png](https://s1.ax1x.com/2022/11/16/zZ2clV.png)](https://imgse.com/i/zZ2clV)
+![byref_example_01](images/examplpatch_byref_01.PNG)
 
 ### Private Field Captures
 
@@ -338,7 +338,7 @@ Insert 类型的 Patch 方法中，PFC 的参数必须在任何接收局部变�
 3. 接收私有域的参数
 4. 接收局部变量的参数
 
-[![zZ2fw4.png](https://s1.ax1x.com/2022/11/16/zZ2fw4.png)](https://imgse.com/i/zZ2fw4)
+![pfc_example_01](images/examplpatch_pfc_01.PNG)
 
 ### SpireReturn
 
@@ -346,7 +346,7 @@ SpireReutn 允许 Patch 方法在原方法中提前调用 `return` 语句。
 
 * SpireReturn 适用于 Prefix 和 Insert 类型的 Patch .（用脑子想想为什么不适用于 Postfix）
 
-[![zZ2xkd.png](https://s1.ax1x.com/2022/11/16/zZ2xkd.png)](https://imgse.com/i/zZ2xkd)
+![image-20240316004217950](images/examplpatch_spirereturn_01.PNG)
 
 对于原方法返回值类型为基本数据类型的方法，需使用其对应的包装类定义 SpireReturn，例如：
 
@@ -374,7 +374,7 @@ ModTheSpire 提供的 Instrument 是简化过的，只允许返回 ExprEditor. P
 
 下面是对 UseCardAction 中的一个构造体进行修改的简单的 Instrument Patch. 当调用的方法名为`onUse` 或 `triggerOnCardPlayed` 和接收的参数符合一定的条件时，原调用方法才可被调用。
 
-[![zZ25k9.png](https://s1.ax1x.com/2022/11/16/zZ25k9.png)](https://imgse.com/i/zZ25k9)
+![instrument_01](images/examplpatch_instrument_01.PNG)
 
 Instrument 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
 
@@ -388,11 +388,11 @@ Raw 放宽了条件，允许你更自由地使用 Javassist 提供的 API 进行
 
 Raw Patch 允许访问字节码水平的修改，例如通过传递 CodeConvertor 作为 instrument 的参数，在遍历到某个符合条件的字节码时对源代码进行修改。下面是允许格挡突破 999 层上限的简单示例，可通过修改源代码中判断格挡层数的代码达成。
 
-[![zZ2b6K.png](https://s1.ax1x.com/2022/11/16/zZ2b6K.png)](https://imgse.com/i/zZ2b6K)
+![raw_example_01](images/examplpatch_raw_01.PNG)
 
 又或者为其他类添加新的方法，打上新的注解等。
 
-[![zZ2X0e.png](https://s1.ax1x.com/2022/11/16/zZ2X0e.png)](https://imgse.com/i/zZ2X0e)
+![raw_example_02](images/examplpatch_raw_02.PNG)
 
 同样地，Raw 类型的 Patch 只会在 ModTheSpire 编译的期间运行一次。
 
@@ -561,9 +561,79 @@ java -jar ModTheSpire.jar --out-jar
    }
    ```
 
+
+
+7. 我想 Patch 原版 DrawPilePanel 中的 hasRelic 方法，我按照教程一步步来写了如下代码，可是为什么一直报错说找不到方法呢？
    
 
-7. 写个 Patch 需要了解的名词和概念怎么这么多？这么多东西这么复杂还容易混淆谁记得住？
+```java
+@SpirePatch(clz = DrawPilePanel.class, method = "hasRelic", paramtypez = {String.class})
+public static class SomeStrangePatch {
+    @SpireInsertPatch(rloc = 0)
+    public static SpireReturn<Boolean> Insert() {
+        if (AbstractDungeon.player.hasPower("SomeStrangePower"))
+            return SpireReturn.Return(true);
+        return SpireReturn.Continue();
+    }
+}
+```
+
+（附原版代码如下）
+
+![image-20240321225427224](images/faq_7_source_code.png)
+
+   **答：**
+   不知道是作为星际深度玩家还是Java 基础不牢固，教程跳着看等多种因素导致的问题。
+
+本教程在第二部分 [SpirePatch 的一般规则](#2-spirepatch-的一般规则) 中就已经很明确地说明了这些非常基础的问题。下为原文。
+
+> * Patch 方法接收所有**原方法（被 Patch 的方法）**的参数。当且仅当原方法是**非静态**方法，Patch 方法还接收（被）Patch 的**原方法所属的类的实例**（Instance）参数。示例如下。
+>
+> ```java
+> public static void [Patch方法名]([实例类型] __instance, [参数列表]...) {...}
+> ```
+
+> ### @SpirePatch 参数
+>
+> * `clz` 定义包含需要（被）Patch 的原方法的类，接收 Class<?> 类型。
+> * `cls` 定义包含需要（被）Patch 的原方法的类，接收 String 类型。必须是完整的类路径和类名。
+> * `method` 定义需要（被）Patch 的原方法 [名] ，接收 String 类型。
+
+先说明一个 Java 中非常基础的概念——类的方法不是指所有在这个类的代码中出现的方法。
+
+从上述例子来看，提问者所说的 `DrawPilePanel` 中的 `hasRelic` 方法显而易见地不是 `DrawPilePanel` 这个类的方法，而是在 `DrawPilePanel` 这个类中的 `render` 方法中被调用的方法。也就是，`DrawPilePanel` 这个类中的 `render` 方法通过 `AbstractPlayer` 类型的实例 `AbstractDungeon.player` 调用了 `hasRelic` 方法，那么很显然这个 `hasRelic` 其实是 `AbstractPlayer` 类的方法，而不是 `DrawPilePanel` 类中的方法，它只是在 `DrawPilePanel` 中被调用。而提问者所使用的 Patch 中的参数 `clz` 和 `method` 必须是一一对应的，所以它无法在 `DrawPilePanel` 这个类中找到不存在于 `DrawPilePanel` 中的 `hasRelic` 方法。
+
+其次，非常明显地，`hasRelic` 是通过一个对象调用，而不是静态方法的 `类名.方法名` 的形式调用，换句话说，这个 `hasRelic` 不是个静态方法。按照本教程所述 SpirePatch 的一般规则，使用 @SpirePatch 而非 @SpirePatch2 时，Patch 方法必须接收原方法所属的类的实例作为一个参数。
+
+再其次，即使 `hasRelic` 真的是 `DrawPilePanel` 中的静态方法，但依旧如同本教程所述，使用 @SpirePatch 而不是 @SpirePatch2 的 Patch 方法**要接收原方法的所有参数**，提问者都知道 `hasRelic` 会接收一个 `String` 类型的参数（还特地写在了 `paramtypez` 里），但却不知为何在自己的 Patch 方法中，也就是
+
+```java
+public static SpireReturn<Boolean> Insert() {
+        if (AbstractDungeon.player.hasPower("SomeStrangePower"))
+            return SpireReturn.Return(true);
+        return SpireReturn.Continue();
+}
+```
+
+不提供一个 `String` 类型的参数。
+
+综上，在**无法揣测提问者原本想要的 Patch 效果的情况下**，提供一个**仅供参考**的修正版代码示例如下
+
+```java
+@SpirePatch(clz = AbstractPlayer.class, method = "hasRelic", paramtypez = {String.class})
+public static class SomeStrangePatch {
+    @SpireInsertPatch(rloc = 0)
+    public static SpireReturn<Boolean> Insert(AbstractPlayer _inst, String s) {
+        if (_inst.hasPower("SomeStrangePower"))
+            return SpireReturn.Return(true);
+        return SpireReturn.Continue();
+    }
+}
+```
+
+   
+
+8. 写个 Patch 需要了解的名词和概念怎么这么多？这么多东西这么复杂还容易混淆谁记得住？
 
    **答：**
 
