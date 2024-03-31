@@ -10,7 +10,7 @@
     * [07 - 添加新遗物](/Tutorials/07%20-%20添加新遗物/README.md)
     * [08 - 添加新关键词](/Tutorials/08%20-%20添加新关键词/README.md)
     * [09 - 添加新能力](/Tutorials/09%20-%20添加新能力/README.md)
-    * [10 - 添加新action](/Tutorials/10%20-%20添加新action/README.md)
+    * [10 - 添加新action](/Tutorials/10%20-%20添加action/README.md)
     * [11 - 如何上传mod](/Tutorials/11%20-%20如何上传mod/README.md)
 * 新手必备知识
     * [01 - 查看报错信息](/Tutorials/新手必备知识/01%20-%20查看报错信息/README.md)
