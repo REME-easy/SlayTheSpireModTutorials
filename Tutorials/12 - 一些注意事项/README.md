@@ -2,6 +2,7 @@
 由于原版的**硬编码**处理的过程较多，特此添加一些注意事项。
 ## 背景音乐
 原版中处理音频的类有以下这些，都在包 `com.megacrit.cardcrawl.audio` 下：
+
 ```
 MusicMaster.class
 SoundMaster.class
@@ -10,10 +11,15 @@ TempMusic.class
 ```
 
 其中 `SoundMaster.class` 是处理音效的类，例如打击音效、观者的真言音效等等。
+
 而 `MusicMaster.class` 是处理音乐的类，例如商店的背景音乐、各层的战斗背景音乐等等。
+
 如果 Mod 作者想要添加新的音效，可以使用 BaseMod 的 addAudio 接口，此处不再赘述。
+
 如果 Mod 作者想要类似于**打醒乐嘉维林会改变背景音乐**的效果，让我们先来看看原版是怎么实现的：
+
 怪物乐嘉维林类（反编译的部分代码）：
+
 ```
 com.megacrit.cardcrawl.monsters.exordium.Lagavulin.class
 ```
@@ -84,9 +90,14 @@ com.megacrit.cardcrawl.monsters.exordium.Lagavulin.class
     }
 ```
 
-从上面这些代码可以得知，如果 Mod 作者想要类似于**打醒乐嘉维林会改变背景音乐**的效果，可以使用原版的 `CardCrawlGame.music.playTempBgmInstantly(String key)` 和 `CardCrawlGame.music.playPrecachedTempBgm()` 方法来**分别** *立即播放* 临时背景音乐 和 *立即播放* 之前 *缓存的* 临时背景音乐。
+从上面这些代码可以得知，如果 Mod 作者想要类似于**打醒乐嘉维林会改变背景音乐**的效果：
+
+可以使用原版的 `CardCrawlGame.music.playTempBgmInstantly(String key)` 和 `CardCrawlGame.music.playPrecachedTempBgm()` 方法来**分别** *立即播放* 临时背景音乐 和 *立即播放* 之前 *缓存的* 临时背景音乐。
 
 让我们来看看原版的这些方法是怎么写的呢？（反编译的部分代码）
+
+**请看** `TempMusic.class` 中 `getSong(String key)` 方法的**注意事项**：
+
 ```
 com.megacrit.cardcrawl.audio.MusicMaster.class
 ```
@@ -138,7 +149,8 @@ com.megacrit.cardcrawl.audio.MusicMaster.class
     }
 ```
 
-请看 `TempMusic.class` 中 `getSong(String key)` 方法的注意事项：
+**请看** `TempMusic.class` 中 `getSong(String key)` 方法的**注意事项**：
+
 ```
 com.megacrit.cardcrawl.audio.TempMusic.class
 ```
