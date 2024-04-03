@@ -194,6 +194,7 @@ com.megacrit.cardcrawl.audio.TempMusic.class
         // 显然如果 Mod 作者直接传入对应的 key 的话，需要注意下面几点：
         // 1. Mod 作者的音频文件路径和原版一致时这个方法可以正常进行，但这样有 文件冲突 的风险
         // 2. 如果不一致，需要使用 Patch 来捕获 key 并提前处理（具体请参见 高级技巧/01 - Patch），否则会导致 NullPointerException
+        // 可以参考 ActLikeIt Mod 框架下的 TempMusicPatch：actlikeit.patches.TempMusicPatch.class
 
         switch (key) {
             case "SHOP":
