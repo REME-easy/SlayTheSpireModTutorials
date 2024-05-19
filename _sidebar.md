@@ -20,7 +20,7 @@
     * [包装卡牌类](/Tutorials/前人的代码基础/包装卡牌类/README.md)
     * [分开独立的能力](/Tutorials/前人的代码基础/分开独立的能力/README.md)
     * [匿名函数](/Tutorials/前人的代码基础/匿名函数/README.md)
-    * [关于音频的注意事项](/Tutorials/前人的代码基础/关于音频的注意事项/README.md)
+    * [音频的注意事项](/Tutorials/前人的代码基础/关于音频的注意事项/README.md)
 * 高级技巧
     * [01 - Patch](/Tutorials/高级技巧/01%20-%20Patch/README.md)
     * [02 - 依赖其他mod](/Tutorials/高级技巧/02%20-%20依赖其他mod/README.md)
