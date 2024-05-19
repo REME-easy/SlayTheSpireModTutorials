@@ -209,6 +209,8 @@ public class MyCharacter extends CustomPlayer {
     // 为原版人物枚举、卡牌颜色枚举扩展的枚举，需要写，接下来要用
     // ***填在SpireEnum中的name需要一致***
     public static class Enums {
+        // 注意此处是在 MyCharacter 类内部的静态嵌套类 Enums 中定义的新 PlayerClass 枚举值
+        // 不可将该定义放在外部的 MyCharacter 类中，具体原因见《高级技巧 / 01 - Patch / SpireEnum》
         @SpireEnum
         public static PlayerClass MY_CHARACTER;
 

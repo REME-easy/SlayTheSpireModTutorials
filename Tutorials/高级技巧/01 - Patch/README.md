@@ -307,6 +307,28 @@ public void foobar(AbstractPlayer.PlayerClass playerClass) {
 }
 ```
 
+**注意：不能也不可以将任何新的枚举值定义在任何从定义该枚举类型的类派生出的类中。**
+
+换句话说，下面的代码是错误的，但不是语法错误，所以你的 IDE 不会提示你。
+
+```java
+// 定义枚举类型 PlayerClass 的类
+public abstract class AbstractPlayer {
+    ...;
+    public static enum PlayerClass {
+        IRONCLAD, THE_SILENT, DEFECT, WATCHER;
+    }
+}
+// MyPlayer 是 AbstractPlayer 的派生类
+public class MyPlayer extends AbstractPlayer {
+    ...;
+    // 此处的 patch 会失败，相当于没添加枚举值 MY_PLAYER 到原版的 PlayerClass 中
+    @SpireEnum(name = "My_New_Player_Class")
+    public static AbstractPlayer.PlayerClass MY_PLAYER;
+}
+```
+
+
 
 ## 4. Patch 可用的特性
 
@@ -646,4 +668,3 @@ public static class SomeStrangePatch {
    
 
 9. 暂无
-   
