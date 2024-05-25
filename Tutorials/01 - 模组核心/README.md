@@ -29,6 +29,8 @@ public class ExampleMod {
 }
 ```
 
+<b>注意！这段代码并没有`package`和`import`，请读者自行添加，参考文件夹下的`ExampleMod.java`。如果你不了解相关知识，请学习一些java知识再查看教程。</b>
+
 ## 2.向basemod订阅事件
 
 basemod提供了许多钩子，也就是在特定时间点调用所有订阅了该钩子的类的特定方法的东西。例如可以通过订阅`EditCardsSubscriber`来向basemod注册你的mod卡牌。<br>
