@@ -301,3 +301,5 @@ EditCharactersSubscriber { // 添加EditCharactersSubscriber
 *并未实际运行，如果出错请在issues或评论留言*
 
 好了！如果你能选择自己的人物，那么算是正式入了mod制作的大门了。在下一章<b>添加新遗物</b>之后，我们将通过几个例子拓宽制作mod的思路。
+
+如果你在关卡结束后报错了，原因是卡牌太少，每个类型至少需要3张牌。
