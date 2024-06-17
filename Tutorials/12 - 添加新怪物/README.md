@@ -93,7 +93,6 @@ public class MyMonster extends CustomMonster {
         receiveEditMonsters();
     }
 
-    @Override
     private void receiveEditMonsters() {
         // 注册怪物组合，你可以多添加几个怪物
         BaseMod.addMonster("ExampleMod:MyMonster", MyMonster.NAME, () -> new MyMonster(0.0F, 0.0F));

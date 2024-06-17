@@ -44,10 +44,10 @@ Wiki上写了一些很实用的小工具，例如自动注册所有卡牌（Auto
 ## 动画
 *制作动画需要一些基础，但其实大多数mod只需要一张图就够了。*
 * [Spine](http://zh.esotericsoftware.com/)<br>
-尖塔使用的2D动画软件，要钱的，不推荐。
+尖塔使用的2D动画软件。
 
 * [龙骨](https://dragonbones.github.io/cn/index.html)<br>
-可以导出spine动画的软件，目前网站无法下载可用版本（只能使用最新版），可以来自己找或者来群里要。
+可以导出spine动画的软件，只能使用最新版，可以来自己找或者来群里要。
 
 ## 和尖塔无关但你也许需要
 * [SourceGraph](https://sourcegraph.com/search)<br>
