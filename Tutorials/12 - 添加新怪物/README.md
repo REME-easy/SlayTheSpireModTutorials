@@ -46,10 +46,6 @@ public class MyMonster extends CustomMonster {
         this.damage.add(new DamageInfo(this, multiDmg));
     }
 
-    public Revenger() {
-        this(0.0F, 0.0F);
-    }
-
     // 战斗开始时
     @Override
     public void usePreBattleAction() {
