@@ -37,7 +37,7 @@ public class ExampleMod implements EditKeywordsSubscriber {
             lang = "zh";
         }
 
-        String json = Gdx.files.internal("ModExampleResources/localization/Keywords_" + lang + ".json")
+        String json = Gdx.files.internal("ExampleModResources/localization/Keywords_" + lang + ".json")
                 .readString(String.valueOf(StandardCharsets.UTF_8));
         Keyword[] keywords = gson.fromJson(json, Keyword[].class);
         if (keywords != null) {
