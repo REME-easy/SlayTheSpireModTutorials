@@ -249,8 +249,9 @@ public class Strike extends CustomCard {
 
 * ExampleModResources
     * localization
-        * cards.json
-        * <b>characters.json</b> <-localization文件夹下新建
+        * ZHS
+            * cards.json
+            * <b>characters.json</b> <-localization/ZHS文件夹下新建
 
 characters.json:
 ```json
