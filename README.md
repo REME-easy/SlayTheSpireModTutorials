@@ -3,6 +3,10 @@
 
 <b>本教程不会讲解Java编程知识，建议先了解一些编程基础再来学习。</b>
 
+<b>如果读者在阅读本教程时发现了错误或者一些不合理的地方，可以通过提交issues帮助改进这篇教程。</b>
+
+<b>如果你有任何不懂的，可以添加下面的交流群或者在上方的discussions处提出你的问题。</b>
+
 <b>点击上方的Tutorials文件夹或者右侧的[教程网站](https://reme-easy.github.io/SlayTheSpireModTutorials/)查看所有教程。</b>
 
 杀戮尖塔mod交流群：723677239
