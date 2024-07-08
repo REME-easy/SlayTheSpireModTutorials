@@ -16,8 +16,8 @@ public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber, E
 
     public ExampleMod() {
         BaseMod.subscribe(this);
-        // 这里的EXAMPLE_CARD是人物类里的，应写成MyCharacter.Enums.EXAMPLE_CARD
-        BaseMod.addColor(EXAMPLE_CARD, MY_COLOR, MY_COLOR, MY_COLOR,
+        // 这里的EXAMPLE_GREEN是人物类里的，应写成MyCharacter.PlayerColorEnum.EXAMPLE_GREEN
+        BaseMod.addColor(EXAMPLE_GREEN, MY_COLOR, MY_COLOR, MY_COLOR,
             MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, BG_ATTACK_512,
             BG_SKILL_512, BG_POWER_512, ENERGY_ORB, BG_ATTACK_1024,
             BG_SKILL_1024, BG_POWER_1024, BIG_ORB, SMALL_ORB
