@@ -34,7 +34,7 @@ public class ExampleMod implements EditKeywordsSubscriber {
         Gson gson = new Gson();
         String lang = "eng";
         if (language == Settings.GameLanguage.ZHS) {
-            lang = "zh";
+            lang = "zhs";
         }
 
         String json = Gdx.files.internal("ExampleModResources/localization/Keywords_" + lang + ".json")
