@@ -11,7 +11,7 @@
 
 ## 2.选择开发工具
 
-理论上使用什么编辑器都可以，可使用的有<b>Eclipse,IntelliJ,Vscode或~~记事本~~</b>。对于新手建议使用[Intellij](https://www.jetbrains.com/idea/download/#section=windows)，本教程对于<b>Intellij</b>和<b>Vscode</b>的使用都会讲解。
+理论上使用什么编辑器都可以，可使用的有<b>Eclipse,IntelliJ,VsCode或~~记事本~~</b>。对于新手建议使用[Intellij](https://www.jetbrains.com/idea/download/#section=windows)，本教程对于<b>Intellij</b>和<b>VsCode</b>的使用都会讲解。
 
 ### Intellij IDEA（以下简称idea）
 
@@ -62,7 +62,8 @@ pom.xml:
         <ModTheSpire.version>3.23.2</ModTheSpire.version>
         <!-- *****一定要改 ***** -->
         <!-- 改成你的steam安装路径位置，指向steamapps文件夹（该目录安装了杀戮尖塔及mod） -->
-        <Steam.path>D:\xxx\steam\steamapps</Steam.path>
+        <!-- 注意使用正斜杠（/）而不是反斜杠（\） -->
+        <Steam.path>D:/xxx/steam/steamapps</Steam.path>
     </properties>
 
     <dependencies>
@@ -124,6 +125,8 @@ pom.xml:
 </project>
 ```
 
+修改完成后，右上角如果有一个刷新按钮，点击刷新。
+
 打开左方的项目文件夹，找到以下结构。
 * src
     * main
@@ -172,9 +175,9 @@ TIPS:
 
 *后面的内容是关于vscode的配置的，idea功能强大但是内存占用过大并且启动时间长，你可以换vscode，功能差不多且速度快（但配置有点麻烦）*
 
-### Vscode
+### VsCode
 
-vscode简洁美观，并且可以自由使用许多插件。首先下载[Vscode](https://code.visualstudio.com/download)。
+vscode简洁美观，并且可以自由使用许多插件。首先下载[VsCode](https://code.visualstudio.com/download)。
 
 1. 在扩展中安装`Extension Pack for Java`插件。（如何安装插件自行百度）
 
