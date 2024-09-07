@@ -30,8 +30,10 @@ MyRelic.java:
 public class MyRelic extends CustomRelic {
     // 遗物ID（此处的ModHelper在“04 - 本地化”中提到）
     public static final String ID = ModHelper.makePath("MyRelic");
-    // 图片路径
+    // 图片路径（大小128x128，可参考同目录的图片）
     private static final String IMG_PATH = "ExampleModResources/img/relics/MyRelic.png";
+    // 遗物未解锁时的轮廓。可以不使用。如果要使用，取消注释
+    // private static final String OUTLINE_PATH = "ExampleModResources/img/relics/MyRelic_Outline.png";
     // 遗物类型
     private static final RelicTier RELIC_TIER = RelicTier.STARTER;
     // 点击音效
@@ -39,6 +41,8 @@ public class MyRelic extends CustomRelic {
 
     public MyRelic() {
         super(ID, ImageMaster.loadImage(IMG_PATH), RELIC_TIER, LANDING_SOUND);
+        // 如果你需要轮廓图，取消注释下面一行并注释上面一行，不需要就删除
+        // super(ID, ImageMaster.loadImage(IMG_PATH), ImageMaster.loadImage(OUTLINE_PATH), RELIC_TIER, LANDING_SOUND);
     }
 
     // 获取遗物描述，但原版游戏只在初始化和获取遗物时调用，故该方法等于初始描述
@@ -65,8 +69,6 @@ public class MyRelic extends CustomRelic {
 }
 ```
 
-*关于遗物类能使用的方法见<b>新手必备知识</b>*。
-
 ## 2.本地化内容
 遗物类只需要保证ID对的上即可。
 
@@ -89,7 +91,7 @@ relics.json:
 ExampleMod.java:
 ```java
 public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber, EditCharactersSubscriber,
-EditRelicsSubscriber{ // 新增
+EditRelicsSubscriber { // 新增
 // ...其余省略
 
     public void receiveEditStrings() {
@@ -108,6 +110,7 @@ EditRelicsSubscriber{ // 新增
     @Override
     public void receiveEditRelics() {
         BaseMod.addRelic(new MyRelic(), RelicType.SHARED); // RelicType表示是所有角色都能拿到的遗物，还是一个角色的独有遗物
+    }
 }
 ```
 

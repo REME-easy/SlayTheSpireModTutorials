@@ -24,9 +24,11 @@
 
 | 名称 | 可能原因 | 如何纠错 |
 | --- | --- | --- |
-| NullPointerException | 一个变量为空，但你却调用了它的方法；还有可能是缺少图片、文本，具体看上下文 | 进行`val != null`的判断；查看自己是否缺少资源 |
+| NullPointerException | 一个变量为空，但你却当它不为空来使用；可能是缺少图片、文本，具体看上下文 | 进行`val != null`的判断；查看自己是否缺少资源 |
 | ArrayIndexOutOfBoundsException | 你索引的数组序号在其范围之外。 | 查看数组序号是否超范围。 |
-| ConcurrentModificationException | 你在循环中增加或删除了元素。（常见的在effects中直接添加、怪物直接在怪物列表添加怪物） | 换一个方向遍历，使用正规的添加删除手段 |
+| ConcurrentModificationException | 你在遍历中增加或删除了元素。（常见的在effects中直接添加、怪物直接在怪物列表添加怪物） | 换一个方向遍历，使用正规的添加删除手段 |
+
+*（当遇到`ConcurrentModificationException`时，如果是`effectList`报错，可以通过往`effectQueue`,`topLevelEffects`,`topLevelEffectsQueue`添加尝试解决）*
 
 ## 2.输出控制台
 
