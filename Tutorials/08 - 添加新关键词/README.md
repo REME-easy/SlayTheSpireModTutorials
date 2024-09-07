@@ -69,3 +69,12 @@ keywords_zhs.json:
 ```json
     "DESCRIPTION": "造成 !D! 点伤害。 NL 给予 !M! 层 examplemod:恐惧 。"
 ```
+
+在遗物描述中使用：
+```json
+    "DESCRIPTIONS": [
+      "战斗开始时，给予随机敌人 !M! 层 #yexamplemod:恐惧 。"
+    ]
+```
+
+能力、关键词描述中不会再解析关键词，只需要`#y恐惧`即可。

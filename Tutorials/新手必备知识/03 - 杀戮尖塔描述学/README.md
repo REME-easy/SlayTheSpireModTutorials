@@ -33,14 +33,14 @@
 
 #### 自定义颜色
 
-使用十六进制颜色可以染成自定义颜色。
+使用十六进制颜色可以染成自定义颜色。<b>所有描述都能使用。</b>
 ```json
     "这是一段 [#87CEEB]描述[] 。" // 天蓝色
 ```
 
 #### 自定义变量
 
-自定义变量可向basemod注册使用。
+自定义变量可向basemod注册使用。<b>只有卡牌描述能使用。</b>
 https://github.com/daviscook477/BaseMod/wiki/Dynamic-Variables
 
 ```json
