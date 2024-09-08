@@ -26,3 +26,4 @@
     * [01 - Patch](/Tutorials/高级技巧/01%20-%20Patch/README.md)
     * [02 - 依赖其他mod](/Tutorials/高级技巧/02%20-%20依赖其他mod/README.md)
     * [03 - 保存数据](/Tutorials/高级技巧/03%20-%20保存数据/README.md)
+    * [04 - BaseMod提供的工具](/Tutorials/高级技巧/04%20-%20BaseMod提供的工具/README.md)
