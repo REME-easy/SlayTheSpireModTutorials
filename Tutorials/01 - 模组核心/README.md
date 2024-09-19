@@ -6,6 +6,8 @@
 
 首先创建一个你的mod文件夹（idea为目录右键new package），并在其中创建一个modcore类。（*它的命名可以由你随意更改*）<br>
 
+如果有`Main.java`文件，可以将其删掉。
+
 项目结构看起来像这样：<br>
 * src
     * main

@@ -16,7 +16,7 @@
 
 首先创建一个文件夹管理遗物类，再创建一个遗物类。
 
-* ModExample
+* examplemod
     * actions
     * cards
     * characters
