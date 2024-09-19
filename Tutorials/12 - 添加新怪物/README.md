@@ -105,3 +105,32 @@ public class MyMonster extends CustomMonster {
     }
 ```
 如果要添加弱怪、强怪，使用`BaseMod.addMonsterEncounter`和`BaseMod.addStrongMonsterEncounter`。
+
+<b>此外，不要忘了添加本地化文件。</b>
+
+```java
+public void receiveEditStrings() {
+        String lang;
+        if (Settings.language == GameLanguage.ZHS) {
+            lang = "ZHS";
+        } else {
+            lang = "ENG";
+        }
+        BaseMod.loadCustomStringsFile(CardStrings.class, "ExampleResources/localization/" + lang + "/cards.json");
+        BaseMod.loadCustomStringsFile(CharacterStrings.class, "ExampleResources/localization/" + lang + "/characters.json");
+        BaseMod.loadCustomStringsFile(RelicStrings.class, "ExampleResources/localization/" + lang + "/relics.json");
+        BaseMod.loadCustomStringsFile(PowerStrings.class, "ExampleResources/localization/" + lang + "/powers.json");
+        // 新的
+        BaseMod.loadCustomStringsFile(MonsterStrings.class, "ExampleResources/localization/" + lang + "/monsters.json");
+    }
+```
+
+monsters.json:
+```json
+{
+  "ExampleMod:MyMonster":{
+    "NAME":"示例怪物",
+    "DIALOG": [""]
+  }
+}
+```
