@@ -110,14 +110,13 @@ IMG_PATH是该卡牌卡图的路径。它从`resources`文件夹开始查找。�
 *例子：*<br>
 
 目录：
-* ModExample
-    * java
-    * resources
-        * ExampleModResources <- 套一层自己的文件夹
-            * img
-                * cards
-                    * Strike.png
-                    * Strike_p.png
+* java
+* resources
+    * ExampleModResources <- 套一层自己的文件夹
+        * img
+            * cards
+                * Strike.png
+                * Strike_p.png
 
 *注意并不是java的子文件夹，是和java文件夹平行的resources文件夹*
 

@@ -2,9 +2,9 @@
 
 添加颜色之后，就可以添加新人物了。我们先来创建一个人物类。首先新建一个文件夹管理你的人物类。
 
-* ModExample
+* examplemod
     * cards
-    * <b>Characters</b> <-这里添加
+    * <b>characters</b> <-这里添加
         * <b>MyCharacter.java</b>
     * modcore
 
@@ -211,6 +211,7 @@ public class MyCharacter extends CustomPlayer {
     // 注意此处是在 MyCharacter 类内部的静态嵌套类中定义的新枚举值
     // 不可将该定义放在外部的 MyCharacter 类中，具体原因见《高级技巧 / 01 - Patch / SpireEnum》
     public static class PlayerColorEnum {
+        // 修改为你的颜色名称，确保不会与其他mod冲突
         @SpireEnum
         public static PlayerClass MY_CHARACTER;
 
@@ -235,7 +236,8 @@ public class MyCharacter extends CustomPlayer {
 
 ```java
 // 主类
-import static ModExample.Characters.MyCharacter.PlayerColorEnum.EXAMPLE_GREEN;
+import static examplemod.characters.MyCharacter.PlayerColorEnum.EXAMPLE_GREEN;
+
 // 省略其他
 public ExampleMod() {
             BaseMod.subscribe(this);
@@ -248,7 +250,8 @@ public ExampleMod() {
 
 ```java
 // 卡牌类
-import static ModExample.Characters.MyCharacter.PlayerColorEnum.EXAMPLE_GREEN;
+import static examplemod.characters.MyCharacter.PlayerColorEnum.EXAMPLE_GREEN;
+
 public class Strike extends CustomCard {
     private static final CardColor COLOR = EXAMPLE_GREEN;
 ```
@@ -280,6 +283,8 @@ characters.json:
 
 ExampleMod.java:
 ```java
+import static examplemod.characters.MyCharacter.PlayerColorEnum.MY_CHARACTER;
+
 @SpireInitializer
 public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber,
 EditCharactersSubscriber { // 添加EditCharactersSubscriber

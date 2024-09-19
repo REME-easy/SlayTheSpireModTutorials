@@ -20,8 +20,8 @@ import com.megacrit.cardcrawl.relics.Vajra;
 import com.megacrit.cardcrawl.screens.CharSelectInfo;
 import java.util.ArrayList;
 
-import static ModExample.Characters.MyCharacter.PlayerColorEnum.EXAMPLE_GREEN;
-import static ModExample.Characters.MyCharacter.PlayerLibraryEnum.MY_CHARACTER;
+import static examplemod.character.MyCharacter.PlayerColorEnum.EXAMPLE_GREEN;
+import static examplemod.character.MyCharacter.PlayerColorEnum.MY_CHARACTER;
 
 public class MyCharacter extends CustomPlayer {
     // 火堆的人物立绘（行动前）
@@ -50,7 +50,7 @@ public class MyCharacter extends CustomPlayer {
     private static final CharacterStrings characterStrings = CardCrawlGame.languagePack.getCharacterString("ExampleMod:MyCharacter");
 
     public MyCharacter(String name) {
-        super(name, MY_CHARACTER,ORB_TEXTURES,"ExampleModResources/img/UI/orb/vfx.png", LAYER_SPEED, null, null);
+        super(name, MY_CHARACTER, ORB_TEXTURES,"ExampleModResources/img/UI/orb/vfx.png", LAYER_SPEED, null, null);
 
 
         // 人物对话气泡的大小，如果游戏中尺寸不对在这里修改（libgdx的坐标轴左下为原点）
@@ -220,6 +220,7 @@ public class MyCharacter extends CustomPlayer {
     // 注意此处是在 MyCharacter 类内部的静态嵌套类中定义的新枚举值
     // 不可将该定义放在外部的 MyCharacter 类中，具体原因见《高级技巧 / 01 - Patch / SpireEnum》
     public static class PlayerColorEnum {
+        // 修改为你的颜色名称，确保不会与其他mod冲突
         @SpireEnum
         public static PlayerClass MY_CHARACTER;
 
@@ -227,6 +228,10 @@ public class MyCharacter extends CustomPlayer {
         // ***并且名称需要一致！！！***
         @SpireEnum
         public static AbstractCard.CardColor EXAMPLE_GREEN;
+
+        // 如果你想添加新的颜色，不要忘记同时添加两个枚举
+        // @SpireEnum
+        // public static AbstractCard.CardColor EXAMPLE_RED;
     }
 
     public static class PlayerLibraryEnum {
@@ -236,5 +241,9 @@ public class MyCharacter extends CustomPlayer {
         // 这个变量未被使用（呈现灰色）是正常的
         @SpireEnum
         public static AbstractCard.LibraryType EXAMPLE_GREEN;
+
+        // 如果你想添加新的颜色，不要忘记同时添加两个枚举
+        // @SpireEnum
+        // public static AbstractCard.LibraryType EXAMPLE_RED;
     }
 }
