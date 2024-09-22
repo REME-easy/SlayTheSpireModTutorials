@@ -67,11 +67,11 @@ CardModifierManager.removeModifiersById(card, ExhaustMod.ID, false);
 第三个参数表示你是否希望让一个`modifier`可以有额外检测是否能被移除，可以通过重写`isInherent`方法实现。大多数情况输入`false`即可。
 
 ### 示例：
-以下是一个实例的自定义标记`modifier`，表示一张卡牌是复制品：
+以下是一个示例的自定义标记`modifier`，表示一张卡牌是复制品：
 ```java
 public class CopyModifier extends AbstractCardModifier {
     public static String ID = "ExampleMod:CopyModifier";
-    private static final UIStrings STRINGS = Tool.CardCrawlGame.languagePack.getUIString(ID);
+    private static final UIStrings STRINGS = CardCrawlGame.languagePack.getUIString(ID);
 
     // 修改描述
     @Override
