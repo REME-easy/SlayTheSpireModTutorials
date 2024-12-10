@@ -3,8 +3,8 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 
 import basemod.abstracts.CustomCard;
 
-public class Strike extends CustomCard implements IHelper {
-    public static final String ID = IHelper.makePath(Strike.class.getSimpleName());
+public class Strike extends CustomCard {
+    public static final String ID = ModHelper.makePath("Strike");
     private static final CardStrings CARD_STRINGS = CardCrawlGame.languagePack.getCardStrings(ID); // 从游戏系统读取本地化资源
     // private static final String NAME = "打击";
     private static final String NAME = CARD_STRINGS.NAME; // 读取本地化的名字
