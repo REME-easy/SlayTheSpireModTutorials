@@ -57,7 +57,7 @@ Strike.java:
 public class Strike extends CustomCard {
     public static final String ID = "ExampleMod:Strike";
     private static final String NAME = "打击";
-    private static final String IMG_PATH = "ModExampleResources/img/cards/Strike.png";
+    private static final String IMG_PATH = "ExampleModResources/img/cards/Strike.png";
     private static final int COST = 1;
     private static final String DESCRIPTION = "造成 !D! 点伤害。";
     private static final CardType TYPE = CardType.ATTACK;
@@ -105,25 +105,24 @@ IMG_PATH是该卡牌卡图的路径。它从`resources`文件夹开始查找。�
 
 > 2.尖塔的卡图需要一张图的两个尺寸，你需要准备一张大小为500 * 380的xxx_p.png(注意后缀)和一张大小为250 * 190的xxx.png，并将他们放在同一个文件夹下。读取时只需要读取无后缀名的png。注意为了美观裁剪成尖塔需要的形状。（文件夹中准备了两张打击图，可直接复制学习用）
 
-> 3.该路径为相对路径，从`resources`文件夹开始查找，例如下方的路径查找的是`resources/ModExampleResources/img/cards/Strike.png`。
+> 3.该路径为相对路径，从`resources`文件夹开始查找，例如下方的路径查找的是`resources/ExampleModResources/img/cards/Strike.png`。
 
 *例子：*<br>
 
 目录：
-* ModExample
-    * java
-    * resources
-        * ModExampleResources <- 套一层自己的文件夹
-            * img
-                * cards
-                    * Strike.png
-                    * Strike_p.png
+* java
+* resources
+    * ExampleModResources <- 套一层自己的文件夹
+        * img
+            * cards
+                * Strike.png
+                * Strike_p.png
 
 *注意并不是java的子文件夹，是和java文件夹平行的resources文件夹*
 
 Strike.java:
 ```java
-    private static final String IMG_PATH = "ModExampleResources/img/cards/Strike.png";
+    private static final String IMG_PATH = "ExampleModResources/img/cards/Strike.png";
 ```
 
 你可以自己按分类创建攻击卡，技能卡和能力卡的卡图文件夹，怎么管理资源就见仁见智了。

@@ -3,6 +3,10 @@
 
 <b>本教程不会讲解Java编程知识，建议先了解一些编程基础再来学习。</b>
 
+<b>如果读者在阅读本教程时发现了错误或者一些不合理的地方，可以通过提交issues帮助改进这篇教程。</b>
+
+<b>如果你有任何不懂的，可以添加下面的交流群或者在上方的discussions处提出你的问题。</b>
+
 <b>点击上方的Tutorials文件夹或者右侧的[教程网站](https://reme-easy.github.io/SlayTheSpireModTutorials/)查看所有教程。</b>
 
 杀戮尖塔mod交流群：723677239
@@ -36,6 +40,9 @@ Wiki上写了一些很实用的小工具，例如自动注册所有卡牌（Auto
 把图片裁剪成尖塔卡图需要的形状和尺寸。<br>
 我并没有用过这个，群里有群友自己制作的另一个相同功能的工具。
 
+* [开发工具打包（提取码：4wvx）](https://pan.baidu.com/s/11q6e924HvwyfrsdL_ottuw?pwd=4wvx)<br>
+打包了一些有用的开发工具，例如idea社区版、jdk等。同时也在群里提供。
+
 ## mod样板
 * [战神徽章mod](https://github.com/Rita-Bernstein/Warlord-Emblem)<br>
 ~~Rita推荐，必属精品~~<br>
@@ -44,14 +51,11 @@ Wiki上写了一些很实用的小工具，例如自动注册所有卡牌（Auto
 ## 动画
 *制作动画需要一些基础，但其实大多数mod只需要一张图就够了。*
 * [Spine](http://zh.esotericsoftware.com/)<br>
-尖塔使用的2D动画软件，要钱的，不推荐。
+尖塔使用的2D动画软件，价格略高。
 
 * [龙骨](https://dragonbones.github.io/cn/index.html)<br>
-可以导出spine动画的软件，目前网站无法下载可用版本（只能使用最新版），可以来自己找或者来群里要。
+可以导出spine动画的软件，可以来群里寻找可用版本。
 
 ## 和尖塔无关但你也许需要
 * [SourceGraph](https://sourcegraph.com/search)<br>
-一个可以快速浏览Github储存库的网站（有Chrome扩展程序，可以在Github页面点击进入相应网页），用起来比Github浏览速度快，并且代码结构清晰，可以在Github抽风时使用。
-
-* [Github文件加速](https://gh.api.99988866.xyz/)<br>
-一个可以快速下载Github Release的网站。
+一个可以快速浏览Github储存库的网站（有Chrome扩展程序，可以在Github页面点击进入相应网页），可以在Github抽风时使用。

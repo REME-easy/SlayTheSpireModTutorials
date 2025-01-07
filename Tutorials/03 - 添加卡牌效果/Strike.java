@@ -9,7 +9,7 @@ import basemod.abstracts.CustomCard;
 public class Strike extends CustomCard {
     public static final String ID = "Strike";
     public static final String NAME = "打击";
-    public static final String IMG_PATH = "";
+    public static final String IMG_PATH = "ExampleModResources/img/cards/Strike.png";
     public static final int COST = 1;
     public static final String DESCRIPTION = "造成 !D! 点伤害。";
     public static final CardType TYPE = CardType.ATTACK;

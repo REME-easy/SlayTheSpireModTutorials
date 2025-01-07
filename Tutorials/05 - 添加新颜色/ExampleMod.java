@@ -16,7 +16,7 @@ public class ExampleMod implements EditCardsSubscriber, EditStringsSubscriber {
 
     public ExampleMod() {
         BaseMod.subscribe(this);
-        BaseMod.addColor(EXAMPLE_CARD, MY_COLOR, MY_COLOR, MY_COLOR,
+        BaseMod.addColor(EXAMPLE_GREEN, MY_COLOR, MY_COLOR, MY_COLOR,
             MY_COLOR, MY_COLOR, MY_COLOR, MY_COLOR, BG_ATTACK_512,
             BG_SKILL_512, BG_POWER_512, energy_orb, BG_ATTACK_1024,
             BG_SKILL_1024, BG_POWER_1024, big_orb, small_orb
