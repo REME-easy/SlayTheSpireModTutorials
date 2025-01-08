@@ -123,7 +123,19 @@ Prefix 会在原方法的最开始插入你的 Patch 方法。
 
 下面是对 AbstractPlayer 中的 draw 方法插入 Prefix Patch 的实例，以及插入前和插入后反编译出的源码效果。注意 draw 方法有 2 个重载，因此需要填写 paramtypez 参数。往后 Patch 实例不再详细解释。
 
-![examplpatch_prefix_01.PNG](images/examplpatch_prefix_01.PNG)
+```java
+@SpirePatch(clz = AbstractPlayer.class, method = "draw", paramtypez = {int.class})
+public static class ExamplePrefixPatch {
+    // 此处使用注解 @SpirePrefixPatch 来定义 prefix 类型的 patch 方法
+    // 亦可通过将方法名从 ExampleMethod 改为 Prefix 来定义 prefix 类型的 patch 方法
+    @SpirePrefixPatch
+    // 按照一般规则，该 patch 方法应该接收两个参数——原方法所属类的一个实例，以及原方法的唯一一个参数
+    // 接收原方法所属类的一个实例的参数为 _inst，接收原方法的原参数（numCards）的参数为 num
+    public static void ExampleMethod(AbstractPlayer _inst, int num) {
+        System.out.printf("[%s] draws [%d] cards", _inst.name, num);
+    }
+}
+```
 
 ![examplpatch_prefix_02.PNG](images/examplpatch_prefix_02.PNG)
 
@@ -197,7 +209,17 @@ Insert 允许你在原方法中间的任意位置插入你的 Patch 方法。Ins
 
 ![insert_example_01](images/examplpatch_insert_01.PNG)
 
-![insert_example_02](images/examplpatch_insert_02.PNG)
+```java
+@SpirePatch(clz = AbstractCard.class, method = "calculateCardDamage")
+public static class ExampleInsertPatch {
+    // 此处 rloc 也可以写成，rloc = 3249 - 3226，可能会更方便
+    @SpireInsertPatch(rloc = 23, localvars = {"tmp"})
+    // 注意捕获的局部变量要在 patch 方法的其他参数之后
+    public static void ExampleInsert(AbstractCard _inst, AbstractMonster m, float tmp) {
+        System.out.println("i am an insert patch method");
+    }
+}
+```
 
 #### 可用特性
 
