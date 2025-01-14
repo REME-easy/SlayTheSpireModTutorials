@@ -7,7 +7,7 @@
 
 <b>如果你有任何不懂的，可以添加下面的交流群或者在上方的discussions处提出你的问题。</b>
 
-<b>点击上方的Tutorials文件夹或者右侧的[教程网站](https://reme-easy.github.io/SlayTheSpireModTutorials/)查看所有教程。</b>
+<b>点击上方的Tutorials文件夹或者右侧的[教程网站](https://glitchedreme.github.io/SlayTheSpireModTutorials/)查看所有教程。</b>
 
 杀戮尖塔mod交流群：723677239
 
